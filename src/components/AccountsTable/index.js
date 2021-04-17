@@ -1,0 +1,89 @@
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+const AccountsTable = () => {
+  const [accounts, setAccounts] = useState([]);
+  // useEffect(() => {
+  //   setAccounts([
+
+  //   ]);
+  // }, []);
+  useEffect(async () => {
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    const accountsData = await (
+      await fetch("http://localhost:3001/account", {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "GET",
+      })
+    ).json();
+    setAccounts(accountsData.accounts);
+  }, []);
+
+  return (
+    <div>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Username</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Faculty</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {accounts.map((account) => {
+              if (account.email === "group4.greenwich@gmail.com") {
+                return (
+                  <TableRow key={account.id}>
+                    <TableCell>{account.username}</TableCell>
+                    <TableCell>{account.email}</TableCell>
+                    <TableCell>{account.role}</TableCell>
+                    <TableCell>{account.faculty}</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                );
+              }
+              return (
+                <TableRow key={account.id}>
+                  <TableCell>{account.username}</TableCell>
+                  <TableCell>{account.email}</TableCell>
+                  <TableCell>{account.role}</TableCell>
+                  <TableCell>{account.faculty}</TableCell>
+                  <TableCell>
+                    <Link to={`/account/editAccount/${account.id}`}>
+                      <Button>
+                        <EditIcon></EditIcon>
+                      </Button>
+                    </Link>
+
+                    <Button>
+                      <DeleteIcon></DeleteIcon>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+};
+
+export default AccountsTable;
