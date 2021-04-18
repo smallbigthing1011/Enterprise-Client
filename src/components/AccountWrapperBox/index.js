@@ -39,7 +39,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Wrapper = (props) => {
+const AccountWrapperBox = (props) => {
   const classes = useStyles();
   return (
     <Box className={classes.root}>
@@ -75,4 +75,4 @@ const Wrapper = (props) => {
   );
 };
 
-export default Wrapper;
+export default AccountWrapperBox;
