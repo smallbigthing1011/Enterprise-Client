@@ -75,22 +75,42 @@ const MagazineForm = () => {
   const { action, idmagazine } = useParams();
 
   const [close, setClose] = useState(true);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [roleSelected, setRoleSelected] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [email, setEmail] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [gender, setGender] = useState("");
-  const [phone, setPhone] = useState("");
-  const [dob, setDob] = useState("");
+  // const [name, setName] = useState("");
+  // const [publishedYear, setPublishedYear] = useState("");
+  // const [closureDate, setClosureDate] = useState("");
+  // const [finalclosureDate, setFinalClosureDate] = useState("");
+  const [magazineInfo, setMagazineInfo] = useState({
+    manager_id: "",
+    name: "",
+    publishedYear: "",
+    closureDate: "",
+    finalClosureDate: "",
+  });
 
+  useEffect(async () => {
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    const account = await (
+      await fetch(`http://localhost:3001/account/me`, {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "GET",
+      })
+    ).json();
+    if (account.exitcode === 0) {
+      let newMagazineInfo = { ...magazineInfo };
+      newMagazineInfo.manager_id = account.account.id;
+      setMagazineInfo(newMagazineInfo);
+    }
+  });
   useEffect(async () => {
     if (action !== "createMagazine") {
       let cookieData = document.cookie;
       const tokenData = JSON.parse(cookieData);
-      const account = await (
-        await fetch(`http://localhost:3001/account/${idaccount}`, {
+      const magazine = await (
+        await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -98,117 +118,61 @@ const MagazineForm = () => {
           method: "GET",
         })
       ).json();
-      if (account.exitcode === 0) {
-        setUsername(account.account.username);
-        setRoleSelected(account.account.role);
-        setEmail(account.account.email);
-        setFaculty(account.account.faculty);
-        setPhone(account.account.phone);
-        setFullname(account.account.fullname);
-        setGender(account.account.gender);
-        setDob(account.account.dob);
+      if (magazine.exitcode === 0) {
+        setMagazineInfo(magazine.magazine);
       }
     }
   }, []);
-
+  const handleChangeMagazine = (event) => {
+    let newMagazine = { ...magazineInfo };
+    newMagazine[event.target.name] = event.target.value;
+    setMagazineInfo(newMagazine);
+  };
   const handleClick = () => {
     setClose(!close);
   };
-  const handleClickGenerate = () => {
-    let generated = crypto({ length: 16, type: "ascii-printable" });
-    setPassword(generated);
-  };
-  const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
-  };
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-  const handleChangeSelect = (event) => {
-    setRoleSelected(event.target.value);
-  };
-  const handleChangeFaculty = (event) => {
-    setFaculty(event.target.value);
-  };
-  const handleChangeEmail = (event) => {
-    setEmail(event.target.value);
-  };
-  const handleChangeFullname = (event) => {
-    setFullname(event.target.value);
-  };
-  const handleChangeGender = (event) => {
-    setGender(event.target.value);
-  };
-  const handleChangeDOB = (event) => {
-    setDob(event.target.value);
-  };
-  const handleChangePhone = (event) => {
-    setPhone(event.target.value);
-  };
+
   const handleClickSave = async () => {
-    let cookieData = document.cookie;
-    const tokenData = JSON.parse(cookieData);
-    const newAccount = await (
-      await fetch("http://localhost:3001/account", {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "POST",
-        body: JSON.stringify({
-          username,
-          password,
-          role: roleSelected,
-          faculty,
-          email,
-          phone,
-          fullname,
-          gender,
-          dob,
-        }),
-      })
-    ).json();
-    history.push("/accounts");
+    // let cookieData = document.cookie;
+    // const tokenData = JSON.parse(cookieData);
+    // const newMagazine = await (
+    //   await fetch("http://localhost:3001/magazine", {
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       "x-access-token": tokenData.token,
+    //     },
+    //     method: "POST",
+    //     body: JSON.stringify(magazineInfo),
+    //   })
+    // ).json();
+    // history.push("/magazines");
+    console.log(magazineInfo.name);
   };
 
   const handleClickUpdate = async () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
-    const updatedAccount = await (
-      await fetch(`http://localhost:3001/account/${idaccount}`, {
+    const updatedMagazine = await (
+      await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
         },
         method: "PUT",
-        body: JSON.stringify({
-          username,
-          password,
-          role: roleSelected,
-          faculty,
-          email,
-          phone,
-          fullname,
-          gender,
-          dob,
-        }),
+        body: JSON.stringify(magazineInfo),
       })
     ).json();
-    if (updatedAccount.exitcode === 0) {
-      if (roleSelected === "admin" || roleSelected === "manager") {
-        history.push("/accounts");
-      } else {
-        history.push("/magazines");
-      }
+    if (updatedMagazine.exitcode === 0) {
+      history.push("/magazines");
     } else {
-      console.log(updatedAccount);
+      console.log(updatedMagazine);
     }
   };
   const handleClickDelete = async () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
-    const deletedAccount = await (
-      await fetch(`http://localhost:3001/account/${idaccount}`, {
+    const deletedMagazine = await (
+      await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -216,10 +180,10 @@ const MagazineForm = () => {
         method: "DELETE",
       })
     ).json();
-    if (deletedAccount.exitcode === 0) {
-      history.push("/accounts");
+    if (deletedMagazine.exitcode === 0) {
+      history.push("/magazines");
     } else {
-      console.log(deletedAccount);
+      console.log(deletedMagazine);
     }
   };
   return (
@@ -257,110 +221,48 @@ const MagazineForm = () => {
         >
           <Box component={Paper} className={classes.papper} padding={3}>
             <TextField
-              label="Username"
+              label="Name"
               variant="outlined"
               fullWidth
-              value={username}
-              onChange={handleChangeUsername}
-            ></TextField>
-
-            {action === "createAccount" && (
-              <Box width="100%">
-                <Grid item container xs={12} sm={12} md={12} lg={12}>
-                  <Grid item xs={12} sm={12} md={10} lg={10}>
-                    <TextField
-                      label="Password"
-                      variant="outlined"
-                      fullWidth
-                      value={password}
-                      onChange={handleChangePassword}
-                    ></TextField>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={2} lg={2}>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={handleClickGenerate}
-                      fullWidth
-                      className={classes.btn}
-                    >
-                      Generate
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            )}
-
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="role-select-label">Role</InputLabel>
-              <Select
-                labelId="role-select-label"
-                id="role-select"
-                value={roleSelected}
-                onChange={action === "createAccount" && handleChangeSelect}
-                label="Role"
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="manager">Manager</MenuItem>
-                <MenuItem value="coordinator">Coordinator</MenuItem>
-                <MenuItem value="student">Student</MenuItem>
-                <MenuItem value="guest">Guest</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label="Email"
-              variant="outlined"
-              fullWidth
-              value={email}
-              onChange={handleChangeEmail}
+              name="name"
+              value={magazineInfo.name}
+              onChange={handleChangeMagazine}
             ></TextField>
             <TextField
-              label="Faculty"
-              variant="outlined"
-              fullWidth
-              value={faculty}
-              onChange={handleChangeFaculty}
-            ></TextField>
-            <TextField
-              label="Full Name"
-              variant="outlined"
-              fullWidth
-              value={fullname}
-              onChange={handleChangeFullname}
-            ></TextField>
-            <TextField
-              label="Phone"
+              label="Published Year"
               variant="outlined"
               fullWidth
               type="number"
-              value={phone}
-              onChange={handleChangePhone}
+              name="publishedYear"
+              value={magazineInfo.publishedYear}
+              onChange={handleChangeMagazine}
             ></TextField>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="gender-select-label">Gender</InputLabel>
-              <Select
-                labelId="gender-select-label"
-                id="gender-select"
-                value={gender}
-                onChange={handleChangeGender}
-                label="Gender"
-              >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-              </Select>
-            </FormControl>
             <TextField
-              label="DOB"
+              label="Closure Date"
               variant="outlined"
-              type="date"
               fullWidth
+              type="date"
+              name="closureDate"
               InputLabelProps={{
                 shrink: true,
               }}
-              value={dob}
-              onChange={handleChangeDOB}
+              value={magazineInfo.closureDate}
+              onChange={handleChangeMagazine}
             ></TextField>
-            {action === "createAccount" && (
+            <TextField
+              label="Final Closure Date"
+              variant="outlined"
+              fullWidth
+              type="date"
+              name="name"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={magazineInfo.finalClosureDate}
+              onChange={handleChangeMagazine}
+            ></TextField>
+
+            {action === "createMagazine" && (
               <ThemeProvider theme={theme}>
                 <Box className={classes.btngroup}>
                   <Button
@@ -374,7 +276,7 @@ const MagazineForm = () => {
               </ThemeProvider>
             )}
 
-            {action === "editAccount" && (
+            {action === "editMagazine" && (
               <ThemeProvider theme={theme}>
                 <Box className={classes.btngroup}>
                   <Button
@@ -387,7 +289,7 @@ const MagazineForm = () => {
                 </Box>
               </ThemeProvider>
             )}
-            {action === "deleteAccount" && (
+            {action === "deleteMagazine" && (
               <ThemeProvider theme={theme}>
                 <Box className={classes.btngroup}>
                   <Button
@@ -400,7 +302,7 @@ const MagazineForm = () => {
                 </Box>
               </ThemeProvider>
             )}
-            {action === "viewAccount" && ""}
+            {action === "viewMagazine" && ""}
           </Box>
         </Grid>
       </Grid>

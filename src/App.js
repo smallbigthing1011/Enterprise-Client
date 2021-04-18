@@ -47,8 +47,14 @@ function App() {
         <Route exact path="/magazines/:idmagazine">
           <MagazineDetail></MagazineDetail>
         </Route>
+        <Route exact path="/account/:action">
+          <AccountForm></AccountForm>
+        </Route>
         <Route exact path="/account/:action/:idaccount">
           <AccountForm></AccountForm>
+        </Route>
+        <Route exact path="/magazine/:action">
+          <MagazineForm></MagazineForm>
         </Route>
         <Route exact path="/magazine/:action/:idmagazine">
           <MagazineForm></MagazineForm>

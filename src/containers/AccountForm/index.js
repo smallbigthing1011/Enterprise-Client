@@ -123,6 +123,8 @@ const AccountForm = () => {
   };
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
+    // let newUserInfo = {...userInfo}
+    // newUserInfo[event.target.name] = event.target.value
   };
   const handleChangeSelect = (event) => {
     setRoleSelected(event.target.value);

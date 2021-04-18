@@ -52,6 +52,11 @@ const useStyles = makeStyles((theme) => ({
   textfield: {
     color: "white",
   },
+  text: {
+    "& .MuiFormLabel-root": {
+      color: "white",
+    },
+  },
 }));
 const Login = () => {
   let history = useHistory();
@@ -170,6 +175,7 @@ const Login = () => {
                   <Grid container justify="center" item md={12}>
                     <TextField
                       InputProps={{ className: classes.textfield }}
+                      className={classes.text}
                       id="standard-secondary"
                       label="Username"
                       fullWidth
@@ -181,6 +187,7 @@ const Login = () => {
                   <Grid container justify="center" item md={12}>
                     <TextField
                       InputProps={{ className: classes.textfield }}
+                      className={classes.text}
                       id="standard-secondary"
                       label="Password"
                       fullWidth

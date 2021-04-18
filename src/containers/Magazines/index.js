@@ -113,9 +113,11 @@ const Magazines = () => {
           className={classes.main}
         >
           <ThemeProvider theme={theme}>
-            <Button variant="outlined" color="secondary">
-              Create Magazine
-            </Button>
+            <Link to="/magazine/createMagazine">
+              <Button variant="outlined" color="secondary">
+                Create Magazine
+              </Button>
+            </Link>
           </ThemeProvider>
           <Box
             display="flex"
@@ -123,22 +125,16 @@ const Magazines = () => {
             flexWrap="wrap"
             className={classes.wrapper}
           >
-            {magazines.map((item, index) => {
+            {magazines.map((item) => {
               return (
-                <Link
-                  to={
-                    role !== "student"
-                      ? `/admin/magazines/${index}`
-                      : `/admin/contributions/details/${index}`
-                  }
-                >
+                <Link to="/magazines">
                   <Magazine
-                    key={index}
+                    key={item._id}
                     isLocked={item.isLocked}
                     name={item.name}
-                    enddate1={item.enddate1}
-                    enddate2={item.enddate2}
-                    year={item.year}
+                    closureDate={item.closureDate}
+                    finalClosureDate={item.finalClosureDate}
+                    publishedYear={item.publishedYear}
                   ></Magazine>
                 </Link>
               );
