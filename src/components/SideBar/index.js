@@ -1,5 +1,5 @@
 import {
-  CircularProgress,
+  Box,
   List,
   ListItem,
   ListItemText,
@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,42 +36,104 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
   },
 }));
-function SideBar(props) {
+function SideBar() {
   const classes = useStyles();
-  const [list, setList] = useState([]);
+  const history = useHistory();
 
-  useEffect(() => {
-    if (props.rolebase === "admin") {
-      setList(["Accounts", "Magazines"]);
-    }
-  }, [props.rolebase]);
+  const [role, setRole] = useState("");
+  const [id, setId] = useState("");
+  let cookieData = document.cookie;
+  useEffect(async () => {
+    const tokenData = JSON.parse(cookieData);
+    const personalData = await (
+      await fetch("http://localhost:3001/account/me", {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "GET",
+      })
+    ).json();
+    console.log(personalData);
+    setRole(personalData.account.role);
+    setId(personalData.account.id);
+  }, []);
+
+  const handleClickLogout = () => {
+    document.cookie = `${cookieData}; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    history.push("/");
+  };
 
   return (
     <div className={classes.root}>
       <Typography
         className={classes.role}
         variant="h6"
-      >{`Role - ${props.rolebase}`}</Typography>
+      >{`Role - ${role}`}</Typography>
       <List className={classes.item}>
-        {list.length > 0 ? (
-          list.map((text, index) => (
-            <Link
-              to={`/admin/${text.toLowerCase()}`}
-              className={classes.link}
-              key={index}
-            >
+        {role === "admin" && (
+          <Box>
+            <Link to="/accounts" className={classes.link}>
               <ListItem button>
-                <ListItemText primary={text} />
+                <ListItemText primary="Accounts" />
               </ListItem>
             </Link>
-          ))
-        ) : (
-          <CircularProgress />
+            <Link to="/magazines" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Magazines" />
+              </ListItem>
+            </Link>
+          </Box>
+        )}
+        {role === "manager" && (
+          <Box>
+            <Link to="/accounts" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Accounts" />
+              </ListItem>
+            </Link>
+            <Link to="/magazines" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Magazines" />
+              </ListItem>
+            </Link>
+          </Box>
+        )}
+        {role === "coordinator" && (
+          <Box>
+            <Link to={`/account/editAccount/${id}`} className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Profile" />
+              </ListItem>
+            </Link>
+            <Link to="/magazines" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Magazines" />
+              </ListItem>
+            </Link>
+          </Box>
+        )}
+        {role === "student" && (
+          <Box>
+            <Link to={`/account/editAccount/${id}`} className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Profile" />
+              </ListItem>
+            </Link>
+            <Link to="/magazines" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Magazines" />
+              </ListItem>
+            </Link>
+          </Box>
         )}
       </List>
       <List className={classes.item}>
         <ListItem button>
-          <ListItemText primary="Logout"></ListItemText>
+          <ListItemText
+            primary="Logout"
+            onClick={handleClickLogout}
+          ></ListItemText>
         </ListItem>
       </List>
     </div>

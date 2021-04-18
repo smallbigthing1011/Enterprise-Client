@@ -1,7 +1,9 @@
-import { Button, Grid, makeStyles, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress, Grid, makeStyles } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SideBar, Wrapper } from "../../components";
+import { useHistory } from "react-router-dom";
+
 const useStyles = makeStyles({
   sidebarOpen: {
     backgroundColor: "#00587A",
@@ -31,6 +33,7 @@ const useStyles = makeStyles({
 });
 const Accounts = () => {
   const classes = useStyles();
+  const history = useHistory();
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
   const [user, setUser] = useState({});
@@ -38,6 +41,9 @@ const Accounts = () => {
   useEffect(() => {
     const tokenData = JSON.parse(cookieData);
     setRole(tokenData.role);
+    if (tokenData.role !== "admin" && tokenData.role !== "manager") {
+      history.push("/oops");
+    }
   });
   useEffect(async () => {
     const tokenData = JSON.parse(cookieData);

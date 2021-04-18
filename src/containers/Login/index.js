@@ -3,18 +3,18 @@ import {
   Button,
   createMuiTheme,
   Grid,
+  IconButton,
   makeStyles,
   Paper,
+  Snackbar,
   TextField,
   ThemeProvider,
   Typography,
-  Snackbar,
-  IconButton,
 } from "@material-ui/core";
-import React, { useState } from "react";
 import CloseIcon from "@material-ui/icons/Close";
-import Logo from "../../images/logo-gw.jpg";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import Logo from "../../images/logo-gw.jpg";
 
 const theme = createMuiTheme({
   palette: {
@@ -58,7 +58,8 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
-  const handleClick = async (event) => {
+
+  const handleClick = async () => {
     const token = await (
       await fetch("http://localhost:3001/auth", {
         headers: { "Content-type": "application/json" },
@@ -70,7 +71,6 @@ const Login = () => {
       })
     ).json();
     if (token.message) {
-      console.log(token.message);
       setOpen(true);
       setUsername("");
       setPassword("");
@@ -89,9 +89,11 @@ const Login = () => {
         role: data.account.role,
       };
       document.cookie = JSON.stringify(cookieSave);
-      console.log(document.cookie);
-
-      history.push("/accounts");
+      if (data.account.role === "admin" || data.account.role === "manager") {
+        history.push("/accounts");
+      } else {
+        history.push("/magazines");
+      }
     }
   };
   const handleSubmit = (event) => {
@@ -103,7 +105,6 @@ const Login = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
   const handleChangeUsername = (event) => {

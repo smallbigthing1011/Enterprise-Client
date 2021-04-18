@@ -11,6 +11,8 @@ import {
   MagazineDetail,
   Magazines,
   UploadForm,
+  NotFound,
+  MagazineForm,
 } from "./containers";
 
 function App() {
@@ -33,19 +35,11 @@ function App() {
         <Route exact path="/login">
           <Login></Login>
         </Route>
-
+        <Route exact path="/oops">
+          <NotFound></NotFound>
+        </Route>
         <Route exact path="/accounts">
           <Accounts></Accounts>
-        </Route>
-
-        <Route exact path="/contributions/:conaction">
-          <ContributionForm></ContributionForm>
-        </Route>
-        <Route exact path="/contributions/details/:idcon">
-          <ContributionDetail></ContributionDetail>
-        </Route>
-        <Route exact path="/contributions/details/:idcon/upload">
-          <UploadForm></UploadForm>
         </Route>
         <Route exact path="/magazines">
           <Magazines></Magazines>
@@ -53,12 +47,22 @@ function App() {
         <Route exact path="/magazines/:idmagazine">
           <MagazineDetail></MagazineDetail>
         </Route>
-        <Route exact path="/account/:action">
-          <AccountForm></AccountForm>
-        </Route>
         <Route exact path="/account/:action/:idaccount">
           <AccountForm></AccountForm>
         </Route>
+        <Route exact path="/magazine/:action/:idmagazine">
+          <MagazineForm></MagazineForm>
+        </Route>
+
+        {/* <Route exact path="/contributions/:conaction">
+          <ContributionForm></ContributionForm>
+        </Route>
+        <Route exact path="/contributions/details/:idcon">
+          <ContributionDetail></ContributionDetail>
+        </Route>
+        <Route exact path="/contributions/details/:idcon/upload">
+          <UploadForm></UploadForm>
+        </Route> */}
       </Switch>
     </div>
   );

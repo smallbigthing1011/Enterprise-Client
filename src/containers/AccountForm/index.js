@@ -2,21 +2,20 @@ import {
   Box,
   Button,
   createMuiTheme,
+  FormControl,
   Grid,
+  InputLabel,
   makeStyles,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   ThemeProvider,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-
 import crypto from "crypto-random-string";
-import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,9 +71,10 @@ const theme = createMuiTheme({
 });
 const AccountForm = () => {
   const classes = useStyles();
-  const { action, idaccount } = useParams();
-  const [close, setClose] = useState(true);
   const history = useHistory();
+  const { action, idaccount } = useParams();
+
+  const [close, setClose] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [roleSelected, setRoleSelected] = useState("");
@@ -115,7 +115,7 @@ const AccountForm = () => {
     setClose(!close);
   };
   const handleClickGenerate = () => {
-    let generated = crypto({ length: 10, type: "ascii-printable" });
+    let generated = crypto({ length: 16, type: "ascii-printable" });
     setPassword(generated);
   };
   const handleChangeUsername = (event) => {
@@ -161,6 +161,10 @@ const AccountForm = () => {
           role: roleSelected,
           faculty,
           email,
+          phone,
+          fullname,
+          gender,
+          dob,
         }),
       })
     ).json();
@@ -191,9 +195,31 @@ const AccountForm = () => {
       })
     ).json();
     if (updatedAccount.exitcode === 0) {
-      history.push("/accounts");
+      if (roleSelected === "admin" || roleSelected === "manager") {
+        history.push("/accounts");
+      } else {
+        history.push("/magazines");
+      }
     } else {
       console.log(updatedAccount);
+    }
+  };
+  const handleClickDelete = async () => {
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    const deletedAccount = await (
+      await fetch(`http://localhost:3001/account/${idaccount}`, {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "DELETE",
+      })
+    ).json();
+    if (deletedAccount.exitcode === 0) {
+      history.push("/accounts");
+    } else {
+      console.log(deletedAccount);
     }
   };
   return (
@@ -226,8 +252,8 @@ const AccountForm = () => {
           lg={12}
           className={classes.main}
           container
-          alignContent="center"
           justify="center"
+          alignItems="center"
         >
           <Box component={Paper} className={classes.papper} padding={3}>
             <TextField
@@ -357,6 +383,19 @@ const AccountForm = () => {
                     onClick={handleClickUpdate}
                   >
                     Update
+                  </Button>
+                </Box>
+              </ThemeProvider>
+            )}
+            {action === "deleteAccount" && (
+              <ThemeProvider theme={theme}>
+                <Box className={classes.btngroup}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleClickDelete}
+                  >
+                    Delete
                   </Button>
                 </Box>
               </ThemeProvider>

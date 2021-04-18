@@ -1,10 +1,25 @@
-import { Box, Button, Grid, makeStyles } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Grid,
+  makeStyles,
+  ThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Magazine, SideBar } from "../../components";
 
-const useStyles = makeStyles({
+const theme = createMuiTheme({
+  palette: {
+    secondary: {
+      main: "#00587A",
+    },
+  },
+});
+
+const useStyles = makeStyles((theme) => ({
   sidebarOpen: {
     backgroundColor: "#00587A",
     position: "fixed",
@@ -36,31 +51,30 @@ const useStyles = makeStyles({
   wrapper: {
     width: "70%",
   },
-});
+}));
 
-const role = "admin";
 const Magazines = () => {
   const classes = useStyles();
   const [close, setClose] = useState(false);
+  const [role, setRole] = useState("");
   const [magazines, setMagazines] = useState([]);
-  useEffect(() => {
-    setMagazines([
-      {
-        name: "magazine",
-        enddate1: "05-05-2021",
-        enddate2: "15-05-2021",
-        isLocked: false,
-        year: "2021",
-      },
-      {
-        name: "magazine",
-        enddate1: "05-05-2021",
-        enddate2: "15-05-2021",
-        isLocked: true,
-        year: "2021",
-      },
-    ]);
-  }, []);
+
+  let cookieData = document.cookie;
+  useEffect(async () => {
+    const tokenData = JSON.parse(cookieData);
+    setRole(tokenData.role);
+    const magazines = await (
+      await fetch("http://localhost:3001/magazine", {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "GET",
+      })
+    ).json();
+    setMagazines(magazines.magazines);
+  });
+
   const handleClick = () => {
     setClose(!close);
   };
@@ -90,6 +104,7 @@ const Magazines = () => {
           container
           justify="center"
           alignItems="center"
+          direction="column"
           item
           xs={12}
           sm={12}
@@ -97,6 +112,11 @@ const Magazines = () => {
           lg={12}
           className={classes.main}
         >
+          <ThemeProvider theme={theme}>
+            <Button variant="outlined" color="secondary">
+              Create Magazine
+            </Button>
+          </ThemeProvider>
           <Box
             display="flex"
             justifyContent="flex-start"
