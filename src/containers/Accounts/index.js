@@ -1,8 +1,8 @@
 import { Button, CircularProgress, Grid, makeStyles } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
-import { SideBar, AccountWrapperBox } from "../../components";
 import { useHistory } from "react-router-dom";
+import { AccountWrapperBox, SideBar } from "../../components";
 
 const useStyles = makeStyles({
   sidebarOpen: {
@@ -56,6 +56,7 @@ const Accounts = () => {
         method: "GET",
       })
     ).json();
+    console.log("useEffect of containers Accounts");
     setUser({
       name: personalData.account.fullname,
       username: personalData.account.username,

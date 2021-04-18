@@ -2,18 +2,13 @@ import {
   Box,
   Button,
   createMuiTheme,
-  FormControl,
   Grid,
-  InputLabel,
   makeStyles,
-  MenuItem,
   Paper,
-  Select,
   TextField,
   ThemeProvider,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import crypto from "crypto-random-string";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
@@ -75,14 +70,11 @@ const MagazineForm = () => {
   const { action, idmagazine } = useParams();
 
   const [close, setClose] = useState(true);
-  // const [name, setName] = useState("");
-  // const [publishedYear, setPublishedYear] = useState("");
-  // const [closureDate, setClosureDate] = useState("");
-  // const [finalclosureDate, setFinalClosureDate] = useState("");
+
   const [magazineInfo, setMagazineInfo] = useState({
     manager_id: "",
     name: "",
-    publishedYear: "",
+    published_year: "",
     closureDate: "",
     finalClosureDate: "",
   });
@@ -99,12 +91,13 @@ const MagazineForm = () => {
         method: "GET",
       })
     ).json();
+    console.log("useEffect of container MagazineForm");
     if (account.exitcode === 0) {
       let newMagazineInfo = { ...magazineInfo };
       newMagazineInfo.manager_id = account.account.id;
       setMagazineInfo(newMagazineInfo);
     }
-  });
+  }, []);
   useEffect(async () => {
     if (action !== "createMagazine") {
       let cookieData = document.cookie;
@@ -127,26 +120,28 @@ const MagazineForm = () => {
     let newMagazine = { ...magazineInfo };
     newMagazine[event.target.name] = event.target.value;
     setMagazineInfo(newMagazine);
+    console.log(newMagazine);
   };
   const handleClick = () => {
     setClose(!close);
   };
 
   const handleClickSave = async () => {
-    // let cookieData = document.cookie;
-    // const tokenData = JSON.parse(cookieData);
-    // const newMagazine = await (
-    //   await fetch("http://localhost:3001/magazine", {
-    //     headers: {
-    //       "Content-type": "application/json",
-    //       "x-access-token": tokenData.token,
-    //     },
-    //     method: "POST",
-    //     body: JSON.stringify(magazineInfo),
-    //   })
-    // ).json();
-    // history.push("/magazines");
-    console.log(magazineInfo.name);
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    const newMagazine = await (
+      await fetch("http://localhost:3001/magazine", {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        method: "POST",
+        body: JSON.stringify(magazineInfo),
+      })
+    ).json();
+    if (newMagazine.exitcode === 0) {
+      history.push("/magazines");
+    } else console.log(newMagazine);
   };
 
   const handleClickUpdate = async () => {
@@ -225,7 +220,7 @@ const MagazineForm = () => {
               variant="outlined"
               fullWidth
               name="name"
-              value={magazineInfo.name}
+              defaultValue={magazineInfo.name}
               onChange={handleChangeMagazine}
             ></TextField>
             <TextField
@@ -233,8 +228,8 @@ const MagazineForm = () => {
               variant="outlined"
               fullWidth
               type="number"
-              name="publishedYear"
-              value={magazineInfo.publishedYear}
+              name="published_year"
+              defaultValue={magazineInfo.published_year}
               onChange={handleChangeMagazine}
             ></TextField>
             <TextField
@@ -246,7 +241,7 @@ const MagazineForm = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              value={magazineInfo.closureDate}
+              defaultValue={magazineInfo.closureDate}
               onChange={handleChangeMagazine}
             ></TextField>
             <TextField
@@ -254,11 +249,11 @@ const MagazineForm = () => {
               variant="outlined"
               fullWidth
               type="date"
-              name="name"
+              name="finalClosureDate"
               InputLabelProps={{
                 shrink: true,
               }}
-              value={magazineInfo.finalClosureDate}
+              defaultValue={magazineInfo.finalClosureDate}
               onChange={handleChangeMagazine}
             ></TextField>
 

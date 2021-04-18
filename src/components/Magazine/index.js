@@ -20,22 +20,27 @@ const useStyles = makeStyles({
 });
 const Magazine = (props) => {
   const classes = useStyles();
-  const [overClosureDate, setoverClosureDate] = useState(false);
-  const [overFinalClosureDate, setoverFinalClosureDate] = useState(false);
+
+  const [border, setBorder] = useState("");
   useEffect(() => {
     const { closureDate, finalClosureDate } = props;
+    console.log(closureDate);
     try {
       const convertedClosureDate = new Date(closureDate);
       const convertedFinalClosureDate = new Date(finalClosureDate);
       const current = new Date();
-      if (current > convertedClosureDate && current < convertedFinalClosureDate)
-        setoverClosureDate(true);
-      else if (
+      if (
+        current > convertedClosureDate &&
+        current < convertedFinalClosureDate
+      ) {
+        setBorder("#F7EA00");
+      } else if (
         current > convertedClosureDate &&
         current > convertedFinalClosureDate
       ) {
-        setoverClosureDate(true);
-        setoverFinalClosureDate(true);
+        setBorder("#BE0000");
+      } else {
+        setBorder("#9EDE73");
       }
     } catch (error) {
       console.log(error);
@@ -49,13 +54,7 @@ const Magazine = (props) => {
         flexDirection="column"
         component={Paper}
         className={classes.root}
-        border={() => {
-          if (overClosureDate && overFinalClosureDate === false) {
-            return "#F7EA00 4px solid";
-          } else if (overClosureDate && overFinalClosureDate) {
-            return "#BE0000 4px solid";
-          } else return "#9EDE73 4px solid";
-        }}
+        border={`4px solid ${border}`}
       >
         <Box>{props.name}</Box>
         <Box>{props.manager}</Box>
@@ -68,7 +67,7 @@ const Magazine = (props) => {
           <Box>{props.closureDate}</Box>
           <Box>{props.finalClosureDate}</Box>
         </Box>
-        <Box className={classes.year}>{props.publishedYear}</Box>
+        <Box className={classes.year}>{props.published_year}</Box>
       </Box>
     </div>
   );

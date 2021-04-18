@@ -58,12 +58,31 @@ const Magazines = () => {
   const [close, setClose] = useState(false);
   const [role, setRole] = useState("");
   const [magazines, setMagazines] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   let cookieData = document.cookie;
+  // useEffect(async () => {
+  //   const tokenData = JSON.parse(cookieData);
+  //   setRole(tokenData.role);
+  //   const accountData = await (
+  //     await fetch("http://localhost:3001/account/me", {
+  //       headers: {
+  //         "Content-type": "application/json",
+  //         "x-access-token": tokenData.token,
+  //       },
+  //       method: "GET",
+  //     })
+  //   ).json();
+
+  //   console.log("useEffect /me from Magazines container");
+  //   if (accountData.exitcode === 0) {
+  //     setMagazines(magazines.magazines);
+  //   }
+  // }, []);
   useEffect(async () => {
     const tokenData = JSON.parse(cookieData);
     setRole(tokenData.role);
-    const magazines = await (
+    setLoading(true);
+    const magazinesData = await (
       await fetch("http://localhost:3001/magazine", {
         headers: {
           "Content-type": "application/json",
@@ -72,8 +91,14 @@ const Magazines = () => {
         method: "GET",
       })
     ).json();
-    setMagazines(magazines.magazines);
-  });
+
+    console.log("useEffect from Magazines container");
+    if (magazinesData.exitcode === 0) {
+      setLoading(false);
+      setMagazines(magazinesData.magazines);
+      console.log(magazinesData.magazines);
+    }
+  }, []);
 
   const handleClick = () => {
     setClose(!close);
@@ -112,33 +137,39 @@ const Magazines = () => {
           lg={12}
           className={classes.main}
         >
-          <ThemeProvider theme={theme}>
-            <Link to="/magazine/createMagazine">
-              <Button variant="outlined" color="secondary">
-                Create Magazine
-              </Button>
-            </Link>
-          </ThemeProvider>
+          {role === "manager" || role === "admin" ? (
+            <ThemeProvider theme={theme}>
+              <Link to="/magazine/createMagazine">
+                <Button variant="outlined" color="secondary">
+                  Create Magazine
+                </Button>
+              </Link>
+            </ThemeProvider>
+          ) : (
+            ""
+          )}
           <Box
             display="flex"
             justifyContent="flex-start"
             flexWrap="wrap"
             className={classes.wrapper}
           >
-            {magazines.map((item) => {
-              return (
-                <Link to="/magazines">
-                  <Magazine
-                    key={item._id}
-                    isLocked={item.isLocked}
-                    name={item.name}
-                    closureDate={item.closureDate}
-                    finalClosureDate={item.finalClosureDate}
-                    publishedYear={item.publishedYear}
-                  ></Magazine>
-                </Link>
-              );
-            })}
+            {loading
+              ? "loading..."
+              : magazines.map((item) => {
+                  return (
+                    <Link to="/magazines">
+                      <Magazine
+                        key={item.id}
+                        name={item.name}
+                        closureDate={item.closureDate}
+                        finalClosureDate={item.finalClosureDate}
+                        published_year={item.published_year}
+                        manager={item.manager.username}
+                      ></Magazine>
+                    </Link>
+                  );
+                })}
           </Box>
         </Grid>
       </Grid>

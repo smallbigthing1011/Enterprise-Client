@@ -54,7 +54,7 @@ function SideBar() {
         method: "GET",
       })
     ).json();
-    console.log(personalData);
+    console.log("sidebar useEffect");
     setRole(personalData.account.role);
     setId(personalData.account.id);
   }, []);
