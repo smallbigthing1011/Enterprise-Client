@@ -30,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100vw",
   },
   paper: {
-    width: "20%",
+    width: "30%",
     background: "#0F3057",
   },
   logo: {
-    width: "22%",
+    width: "200px",
   },
   logoImg: {
     width: "100%",
@@ -157,12 +157,15 @@ const Login = () => {
           justify="center"
           alignItems="center"
           item
+          xs={12}
+          sm={12}
           md={12}
+          lg={12}
           direction="column"
         >
-          <Box className={classes.logo}>
+          <Grid item xs={8} sm={8} md={4} lg={4}>
             <img src={Logo} className={classes.logoImg} alt="logo"></img>
-          </Box>
+          </Grid>
           <Box component={Paper} className={classes.paper} padding={5}>
             <form onKeyDown={handleSubmit}>
               <Grid container alignItems="center" justify="center" spacing={3}>

@@ -8,9 +8,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import ModeCommentIcon from "@material-ui/icons/ModeComment";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FilesTable, SideBar } from "../../components";
+import { FilesTable, CommentBox, SideBar } from "../../components";
 
 const useStyles = makeStyles({
   sidebarOpen: {
@@ -21,6 +22,18 @@ const useStyles = makeStyles({
   },
   sidebarClose: {
     height: "0",
+  },
+  commentOpen: {
+    backgroundColor: "#E7E7DE",
+    position: "fixed",
+    right: "0",
+    height: "100vh",
+    width: "100%",
+    transition: "linear 0.5s",
+  },
+  commentClose: {
+    height: "0",
+    width: "0",
   },
   menuBtnOpen: {
     height: "30px",
@@ -34,6 +47,22 @@ const useStyles = makeStyles({
     position: "fixed",
     zIndex: "999",
   },
+  commentBtnOpen: {
+    height: "30px",
+    color: "#000000",
+    position: "fixed",
+    right: "0",
+    bottom: "0",
+    zIndex: "9999",
+  },
+  commentBtnClose: {
+    height: "30px",
+    right: "0",
+    bottom: "0",
+    color: "#000000",
+    position: "fixed",
+    zIndex: "9999",
+  },
   main: {
     minHeight: "100vh",
     backgroundColor: "#E7E7DE",
@@ -44,6 +73,9 @@ const useStyles = makeStyles({
     boxShadow: " 0px -10px 37px 0px rgba(0,0,0,0.2)",
     minHeight: "80%",
     width: "100%",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
   title: {
     textAlign: "right",
@@ -60,16 +92,20 @@ const theme = createMuiTheme({
   },
 });
 const ContributionDetail = () => {
-  const [close, setClose] = useState(false);
+  const [closeSideBar, setCloseSideBar] = useState(true);
+  const [closeComment, setCloseComment] = useState(true);
   const classes = useStyles();
-  const handleClick = () => {
-    setClose(!close);
+  const handleClickSideBar = () => {
+    setCloseSideBar(!closeSideBar);
+  };
+  const handleClickComment = () => {
+    setCloseComment(!closeComment);
   };
   return (
     <div>
       <Button
-        className={close ? classes.menuBtnClose : classes.menuBtnOpen}
-        onClick={handleClick}
+        className={closeSideBar ? classes.menuBtnClose : classes.menuBtnOpen}
+        onClick={handleClickSideBar}
       >
         <MenuIcon></MenuIcon>
       </Button>
@@ -78,13 +114,13 @@ const ContributionDetail = () => {
           item
           container
           justify="center"
-          xs={4}
-          sm={4}
+          xs={5}
+          sm={5}
           md={3}
           lg={3}
-          className={close ? classes.sidebarClose : classes.sidebarOpen}
+          className={closeSideBar ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {closeSideBar ? "" : <SideBar rolebase="admin"></SideBar>}
         </Grid>
 
         <Grid
@@ -118,7 +154,28 @@ const ContributionDetail = () => {
             <FilesTable></FilesTable>
           </Box>
         </Grid>
+
+        <Grid
+          item
+          container
+          justify="center"
+          xs={5}
+          sm={5}
+          md={3}
+          lg={3}
+          className={closeComment ? classes.commentClose : classes.commentOpen}
+        >
+          {closeComment ? "" : <CommentBox></CommentBox>}
+        </Grid>
       </Grid>
+      <Button
+        className={
+          closeComment ? classes.commentBtnClose : classes.commentBtnOpen
+        }
+        onClick={handleClickComment}
+      >
+        <ModeCommentIcon></ModeCommentIcon>
+      </Button>
     </div>
   );
 };

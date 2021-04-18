@@ -1,10 +1,10 @@
 import {
   Box,
   Button,
+  createMuiTheme,
   Grid,
   makeStyles,
   ThemeProvider,
-  createMuiTheme,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Magazines = () => {
   const classes = useStyles();
-  const [close, setClose] = useState(false);
+  const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
   const [magazines, setMagazines] = useState([]);
   const [loading, setLoading] = useState(false);

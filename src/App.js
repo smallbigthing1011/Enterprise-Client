@@ -59,13 +59,13 @@ function App() {
         <Route exact path="/magazine/:action/:idmagazine">
           <MagazineForm></MagazineForm>
         </Route>
-
+        <Route exact path="/contributions/:action/:idcon">
+          <ContributionDetail></ContributionDetail>
+        </Route>
         {/* <Route exact path="/contributions/:conaction">
           <ContributionForm></ContributionForm>
         </Route>
-        <Route exact path="/contributions/details/:idcon">
-          <ContributionDetail></ContributionDetail>
-        </Route>
+        
         <Route exact path="/contributions/details/:idcon/upload">
           <UploadForm></UploadForm>
         </Route> */}

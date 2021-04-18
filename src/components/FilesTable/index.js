@@ -55,6 +55,31 @@ const FilesTable = () => {
         uploads: ["file1.doc", "file2.png"],
         comments: ["okay"],
       },
+      {
+        date: "10/04/2021",
+        uploads: ["file1.doc", "file2.png"],
+        comments: ["okay"],
+      },
+      {
+        date: "10/04/2021",
+        uploads: ["file1.doc", "file2.png"],
+        comments: ["okay"],
+      },
+      {
+        date: "10/04/2021",
+        uploads: ["file1.doc", "file2.png"],
+        comments: ["okay"],
+      },
+      {
+        date: "10/04/2021",
+        uploads: ["file1.doc", "file2.png"],
+        comments: ["okay"],
+      },
+      {
+        date: "10/04/2021",
+        uploads: ["file1.doc", "file2.png"],
+        comments: ["okay"],
+      },
     ]);
   }, []);
 
@@ -66,7 +91,6 @@ const FilesTable = () => {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>Files</TableCell>
-              <TableCell>Comment</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -76,11 +100,6 @@ const FilesTable = () => {
                   <TableCell>{files.date}</TableCell>
                   <TableCell>
                     {files.uploads.map((upload) => {
-                      return <Typography>{upload}</Typography>;
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {files.comments.map((upload) => {
                       return <Typography>{upload}</Typography>;
                     })}
                   </TableCell>
