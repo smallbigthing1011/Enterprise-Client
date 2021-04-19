@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -44,19 +38,12 @@ const AccountWrapperBox = (props) => {
   return (
     <Box className={classes.root}>
       <Box>
-        <Typography
-          align="right"
-          className={classes.typo}
-          variant="h5"
-        >{`Welcome ${props.user.username}`}</Typography>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          className={classes.textfield}
-        >
-          {/* <TextField placeholder="Search for an account"></TextField> */}
-        </Box>
+        <Typography align="right" className={classes.typo} variant="h5">
+          {props.user.name === null ? "Update your name" : props.user.name}
+        </Typography>
+        <Typography align="right" className={classes.typo}>
+          {props.user.email}
+        </Typography>
       </Box>
 
       <Box className={classes.table}>

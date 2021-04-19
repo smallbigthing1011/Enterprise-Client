@@ -1,8 +1,14 @@
-import { Button, CircularProgress, Grid, makeStyles } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { AccountWrapperBox, SideBar } from "../../components";
+import { ChartBox, SideBar } from "../../components";
 
 const useStyles = makeStyles({
   sidebarOpen: {
@@ -30,8 +36,11 @@ const useStyles = makeStyles({
     minHeight: "100vh",
     backgroundColor: "#E7E7DE",
   },
+  chartbox: {
+    width: "50%",
+  },
 });
-const Accounts = () => {
+const Dashboard = () => {
   const classes = useStyles();
   const history = useHistory();
   const [close, setClose] = useState(true);
@@ -44,12 +53,12 @@ const Accounts = () => {
     if (tokenData.role !== "admin" && tokenData.role !== "manager") {
       history.push("/oops");
     }
-  });
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       const tokenData = JSON.parse(cookieData);
       const personalData = await (
-        await fetch("http://localhost:3001/accounts/me", {
+        await fetch("http://localhost:3001/account/me", {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -57,13 +66,11 @@ const Accounts = () => {
           method: "GET",
         })
       ).json();
+      console.log("useEffect of containers Accounts");
 
-      setUser({
-        name: personalData.account.fullname,
-        email: personalData.account.email,
-      });
+      console.log(personalData);
+      fetchData();
     };
-    fetchData();
   }, []);
 
   const handleClick = () => {
@@ -91,11 +98,23 @@ const Accounts = () => {
               lg={4}
               className={close ? classes.sidebarClose : classes.sidebarOpen}
             >
-              {close ? "" : <SideBar></SideBar>}
+              {close ? "" : <SideBar rolebase="admin"></SideBar>}
             </Grid>
 
-            <Grid item xs={12} sm={12} md={12} lg={12} className={classes.main}>
-              <AccountWrapperBox user={user}></AccountWrapperBox>
+            <Grid
+              item
+              container
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              className={classes.main}
+              justify="center"
+              alignItems="center"
+            >
+              <Box className={classes.chartbox}>
+                <ChartBox></ChartBox>
+              </Box>
             </Grid>
           </Grid>
         </div>
@@ -106,4 +125,4 @@ const Accounts = () => {
   );
 };
 
-export default Accounts;
+export default Dashboard;

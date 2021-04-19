@@ -7,6 +7,7 @@ import {
   Paper,
   TextField,
   ThemeProvider,
+  CircularProgress,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
@@ -68,9 +69,8 @@ const MagazineForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const { action, idmagazine } = useParams();
-
   const [close, setClose] = useState(true);
-
+  const [loading, setLoading] = useState(false);
   const [magazineInfo, setMagazineInfo] = useState({
     manager_id: "",
     name: "",
@@ -79,31 +79,12 @@ const MagazineForm = () => {
     finalClosureDate: "",
   });
 
-  useEffect(async () => {
-    let cookieData = document.cookie;
-    const tokenData = JSON.parse(cookieData);
-    const account = await (
-      await fetch(`http://localhost:3001/account/me`, {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "GET",
-      })
-    ).json();
-    console.log("useEffect of container MagazineForm");
-    if (account.exitcode === 0) {
-      let newMagazineInfo = { ...magazineInfo };
-      newMagazineInfo.manager_id = account.account.id;
-      setMagazineInfo(newMagazineInfo);
-    }
-  }, []);
-  useEffect(async () => {
-    if (action !== "createMagazine") {
+  useEffect(() => {
+    const fetchData = async () => {
       let cookieData = document.cookie;
       const tokenData = JSON.parse(cookieData);
-      const magazine = await (
-        await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
+      const account = await (
+        await fetch(`http://localhost:3001/accounts/me`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -111,16 +92,43 @@ const MagazineForm = () => {
           method: "GET",
         })
       ).json();
-      if (magazine.exitcode === 0) {
-        setMagazineInfo(magazine.magazine);
+
+      if (account.exitcode === 0) {
+        let newMagazineInfo = { ...magazineInfo };
+        newMagazineInfo.manager_id = account.account.id;
+        setMagazineInfo(newMagazineInfo);
       }
-    }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(magazineInfo.manager_id);
+      if (action !== "createMagazine") {
+        let cookieData = document.cookie;
+        const tokenData = JSON.parse(cookieData);
+        setLoading(true);
+        const magazine = await (
+          await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
+            headers: {
+              "Content-type": "application/json",
+              "x-access-token": tokenData.token,
+            },
+            method: "GET",
+          })
+        ).json();
+        if (magazine.exitcode === 0) {
+          setMagazineInfo(magazine.magazine);
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
   }, []);
   const handleChangeMagazine = (event) => {
     let newMagazine = { ...magazineInfo };
     newMagazine[event.target.name] = event.target.value;
     setMagazineInfo(newMagazine);
-    console.log(newMagazine);
   };
   const handleClick = () => {
     setClose(!close);
@@ -130,7 +138,7 @@ const MagazineForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const newMagazine = await (
-      await fetch("http://localhost:3001/magazine", {
+      await fetch("http://localhost:3001/magazines", {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -139,16 +147,18 @@ const MagazineForm = () => {
         body: JSON.stringify(magazineInfo),
       })
     ).json();
-    if (newMagazine.exitcode === 0) {
-      history.push("/magazines");
-    } else console.log(newMagazine);
+    console.log(newMagazine);
+    // if (newMagazine.exitcode === 0) {
+    //   history.push("/magazines");
+    // } else console.log(newMagazine);
   };
 
   const handleClickUpdate = async () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
+
     const updatedMagazine = await (
-      await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
+      await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -163,24 +173,7 @@ const MagazineForm = () => {
       console.log(updatedMagazine);
     }
   };
-  // const handleClickDelete = async () => {
-  //   let cookieData = document.cookie;
-  //   const tokenData = JSON.parse(cookieData);
-  //   const deletedMagazine = await (
-  //     await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
-  //       headers: {
-  //         "Content-type": "application/json",
-  //         "x-access-token": tokenData.token,
-  //       },
-  //       method: "DELETE",
-  //     })
-  //   ).json();
-  //   if (deletedMagazine.exitcode === 0) {
-  //     history.push("/magazines");
-  //   } else {
-  //     console.log(deletedMagazine);
-  //   }
-  // };
+
   return (
     <div>
       <Button
@@ -200,7 +193,7 @@ const MagazineForm = () => {
           lg={3}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -214,91 +207,82 @@ const MagazineForm = () => {
           justify="center"
           alignItems="center"
         >
-          <Box component={Paper} className={classes.papper} padding={3}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              name="name"
-              defaultValue={magazineInfo.name}
-              onChange={handleChangeMagazine}
-            ></TextField>
-            <TextField
-              label="Published Year"
-              variant="outlined"
-              fullWidth
-              type="number"
-              name="published_year"
-              defaultValue={magazineInfo.published_year}
-              onChange={handleChangeMagazine}
-            ></TextField>
-            <TextField
-              label="Closure Date"
-              variant="outlined"
-              fullWidth
-              type="date"
-              name="closureDate"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              defaultValue={magazineInfo.closureDate}
-              onChange={handleChangeMagazine}
-            ></TextField>
-            <TextField
-              label="Final Closure Date"
-              variant="outlined"
-              fullWidth
-              type="date"
-              name="finalClosureDate"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              defaultValue={magazineInfo.finalClosureDate}
-              onChange={handleChangeMagazine}
-            ></TextField>
+          {loading ? (
+            <CircularProgress></CircularProgress>
+          ) : (
+            <Box component={Paper} className={classes.papper} padding={3}>
+              <TextField
+                label="Name"
+                variant="outlined"
+                fullWidth
+                name="name"
+                defaultValue={magazineInfo.name}
+                onChange={handleChangeMagazine}
+              ></TextField>
+              <TextField
+                label="Published Year"
+                variant="outlined"
+                fullWidth
+                type="number"
+                name="published_year"
+                defaultValue={magazineInfo.published_year}
+                onChange={handleChangeMagazine}
+              ></TextField>
+              <TextField
+                label="Closure Date"
+                variant="outlined"
+                fullWidth
+                type="date"
+                name="closureDate"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                defaultValue={magazineInfo.closureDate}
+                onChange={handleChangeMagazine}
+              ></TextField>
+              <TextField
+                label="Final Closure Date"
+                variant="outlined"
+                fullWidth
+                type="date"
+                name="finalClosureDate"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                defaultValue={magazineInfo.finalClosureDate}
+                onChange={handleChangeMagazine}
+              ></TextField>
+              {action === "createMagazine" && (
+                <ThemeProvider theme={theme}>
+                  <Box className={classes.btngroup}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleClickSave}
+                    >
+                      Create
+                    </Button>
+                  </Box>
+                </ThemeProvider>
+              )}
 
-            {action === "createMagazine" && (
-              <ThemeProvider theme={theme}>
-                <Box className={classes.btngroup}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleClickSave}
-                  >
-                    Create
-                  </Button>
-                </Box>
-              </ThemeProvider>
-            )}
+              {action === "editMagazine" && (
+                <ThemeProvider theme={theme}>
+                  <Box className={classes.btngroup}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleClickUpdate}
+                    >
+                      Update
+                    </Button>
+                  </Box>
+                </ThemeProvider>
+              )}
 
-            {action === "editMagazine" && (
-              <ThemeProvider theme={theme}>
-                <Box className={classes.btngroup}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleClickUpdate}
-                  >
-                    Update
-                  </Button>
-                </Box>
-              </ThemeProvider>
-            )}
-            {/* {action === "deleteMagazine" && (
-              <ThemeProvider theme={theme}>
-                <Box className={classes.btngroup}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleClickDelete}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              </ThemeProvider>
-            )} */}
-            {action === "viewMagazine" && ""}
-          </Box>
+              {action === "viewMagazine" && ""}
+            </Box>
+          )}
         </Grid>
       </Grid>
     </div>

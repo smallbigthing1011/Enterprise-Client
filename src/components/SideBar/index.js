@@ -43,20 +43,23 @@ function SideBar() {
   const [role, setRole] = useState("");
   const [id, setId] = useState("");
   let cookieData = document.cookie;
-  useEffect(async () => {
-    const tokenData = JSON.parse(cookieData);
-    const personalData = await (
-      await fetch("http://localhost:3001/account/me", {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "GET",
-      })
-    ).json();
-    console.log("sidebar useEffect");
-    setRole(personalData.account.role);
-    setId(personalData.account.id);
+  useEffect(() => {
+    const fetchData = async () => {
+      const tokenData = JSON.parse(cookieData);
+      const personalData = await (
+        await fetch("http://localhost:3001/accounts/me", {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        })
+      ).json();
+      console.log("sidebar useEffect");
+      setRole(personalData.account.role);
+      setId(personalData.account.id);
+    };
+    fetchData();
   }, []);
 
   const handleClickLogout = () => {
@@ -73,6 +76,11 @@ function SideBar() {
       <List className={classes.item}>
         {role === "admin" && (
           <Box>
+            <Link to="/dashboard" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+            </Link>
             <Link to="/accounts" className={classes.link}>
               <ListItem button>
                 <ListItemText primary="Accounts" />
@@ -87,6 +95,11 @@ function SideBar() {
         )}
         {role === "manager" && (
           <Box>
+            <Link to="/dashboard" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+            </Link>
             <Link to="/accounts" className={classes.link}>
               <ListItem button>
                 <ListItemText primary="Accounts" />

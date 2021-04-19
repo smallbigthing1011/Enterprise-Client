@@ -74,15 +74,16 @@ const AccountForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const { action, idaccount } = useParams();
+  console.log(action);
 
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
+  // const [message, setMessage] = setState("");
   const [userInfo, setUserInfo] = useState({
-    username: "",
+    email: "",
     password: "",
     role: "",
     faculty: "",
-    email: "",
     fullname: "",
     gender: "",
     phone: "",
@@ -95,27 +96,30 @@ const AccountForm = () => {
     setRole(tokenData.role);
   }, []);
 
-  useEffect(async () => {
-    if (action !== "createAccount") {
-      let cookieData = document.cookie;
-      const tokenData = JSON.parse(cookieData);
-      setLoading(true);
-      const accountData = await (
-        await fetch(`http://localhost:3001/account/${idaccount}`, {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-      if (accountData.exitcode === 0) {
-        let defaultAccount = { ...accountData.account };
-        delete defaultAccount.id;
-        setUserInfo(defaultAccount);
-        setLoading(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (action !== "createAccount") {
+        let cookieData = document.cookie;
+        const tokenData = JSON.parse(cookieData);
+        setLoading(true);
+        const accountData = await (
+          await fetch(`http://localhost:3001/accounts/${idaccount}`, {
+            headers: {
+              "Content-type": "application/json",
+              "x-access-token": tokenData.token,
+            },
+            method: "GET",
+          })
+        ).json();
+        if (accountData.exitcode === 0) {
+          let defaultAccount = { ...accountData.account };
+          delete defaultAccount.id;
+          setUserInfo(defaultAccount);
+          setLoading(false);
+        }
       }
-    }
+    };
+    fetchData();
   }, []);
 
   const handleClick = () => {
@@ -123,11 +127,11 @@ const AccountForm = () => {
   };
   const handleClickGenerate = () => {
     let generated = crypto({ length: 16, type: "ascii-printable" });
-    setLoading(true);
+
     let newUserInfo = { ...userInfo };
     newUserInfo.password = generated;
+
     setUserInfo(newUserInfo);
-    setLoading(false);
   };
   const handleChangeUser = (event) => {
     let newUserInfo = { ...userInfo };
@@ -139,7 +143,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const newAccount = await (
-      await fetch("http://localhost:3001/account", {
+      await fetch("http://localhost:3001/accounts", {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -155,7 +159,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const updatedAccount = await (
-      await fetch(`http://localhost:3001/account/${idaccount}`, {
+      await fetch(`http://localhost:3001/accounts/${idaccount}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -178,7 +182,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const deletedAccount = await (
-      await fetch(`http://localhost:3001/account/${idaccount}`, {
+      await fetch(`http://localhost:3001/accounts/${idaccount}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -211,7 +215,7 @@ const AccountForm = () => {
           lg={3}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -230,47 +234,74 @@ const AccountForm = () => {
           ) : (
             <Box component={Paper} className={classes.papper} padding={3}>
               <TextField
-                label="Username"
+                label="Email"
                 variant="outlined"
                 fullWidth
-                name="username"
-                defaultValue={userInfo.username}
+                name="email"
+                defaultValue={userInfo.email}
                 onChange={handleChangeUser}
               ></TextField>
 
-              {action === "createAccount" ||
-                (action === "editAccount" && (
-                  <Box width="100%">
-                    <Grid item container xs={12} sm={12} md={12} lg={12}>
-                      <Grid item xs={12} sm={12} md={10} lg={10}>
-                        <TextField
-                          label="Password"
-                          variant="outlined"
-                          name="password"
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          defaultValue={
-                            loading ? "generated..." : userInfo.password
-                          }
-                          onChange={handleChangeUser}
-                        ></TextField>
-                      </Grid>
-                      <Grid item xs={12} sm={12} md={2} lg={2}>
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          onClick={handleClickGenerate}
-                          fullWidth
-                          className={classes.btn}
-                        >
-                          Generate
-                        </Button>
-                      </Grid>
+              {action === "createAccount" && (
+                <Box width="100%">
+                  <Grid item container xs={12} sm={12} md={12} lg={12}>
+                    <Grid item xs={12} sm={12} md={10} lg={10}>
+                      <TextField
+                        label="Password"
+                        variant="outlined"
+                        name="password"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={userInfo.password}
+                        onChange={handleChangeUser}
+                      ></TextField>
                     </Grid>
-                  </Box>
-                ))}
+                    <Grid item xs={12} sm={12} md={2} lg={2}>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={handleClickGenerate}
+                        fullWidth
+                        className={classes.btn}
+                      >
+                        Generate
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+              {action === "editAccount" && (
+                <Box width="100%">
+                  <Grid item container xs={12} sm={12} md={12} lg={12}>
+                    <Grid item xs={12} sm={12} md={10} lg={10}>
+                      <TextField
+                        label="Password"
+                        variant="outlined"
+                        name="password"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={userInfo.password}
+                        onChange={handleChangeUser}
+                      ></TextField>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={2} lg={2}>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={handleClickGenerate}
+                        fullWidth
+                        className={classes.btn}
+                      >
+                        Generate
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
 
               <FormControl variant="outlined" fullWidth>
                 <InputLabel id="role-select-label">Role</InputLabel>
@@ -290,14 +321,7 @@ const AccountForm = () => {
                   <MenuItem value="guest">Guest</MenuItem>
                 </Select>
               </FormControl>
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                name="email"
-                defaultValue={userInfo.email}
-                onChange={handleChangeUser}
-              ></TextField>
+
               <TextField
                 label="Faculty"
                 variant="outlined"

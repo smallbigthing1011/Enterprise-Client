@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 import "./App.css";
 import {
@@ -6,6 +6,7 @@ import {
   Accounts,
   ContributionDetail,
   ContributionForm,
+  Dashboard,
   Home,
   Login,
   MagazineDetail,
@@ -41,11 +42,17 @@ function App() {
         <Route exact path="/accounts">
           <Accounts></Accounts>
         </Route>
+        <Route exact path="/dashboard">
+          <Dashboard></Dashboard>
+        </Route>
         <Route exact path="/magazines">
           <Magazines></Magazines>
         </Route>
-        <Route exact path="/magazine/:idmagazine">
+        <Route exact path="/magazines/:idmagazine">
           <MagazineDetail></MagazineDetail>
+        </Route>
+        <Route exact path="/magazine/:action">
+          <MagazineForm></MagazineForm>
         </Route>
         <Route exact path="/account/:action">
           <AccountForm></AccountForm>

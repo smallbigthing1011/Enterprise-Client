@@ -141,7 +141,7 @@ const ContributionDetail = () => {
           </Box>
           <ThemeProvider theme={theme}>
             <Box width="100%" display="flex" justifyContent="flex-end">
-              <Link to="/admin/contributions/details/1/upload">
+              <Link to="/contribution/1/1/upload">
                 <Button variant="contained" color="secondary">
                   Submit
                 </Button>

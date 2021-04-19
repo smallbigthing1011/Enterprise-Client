@@ -69,7 +69,7 @@ const theme = createMuiTheme({
 const UploadForm = () => {
   const classes = useStyles();
   //   const { conaction } = useParams();
-  const [close, setClose] = useState(false);
+  const [close, setClose] = useState(true);
   const handleClick = () => {
     setClose(!close);
   };

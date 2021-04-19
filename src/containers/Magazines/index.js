@@ -60,45 +60,30 @@ const Magazines = () => {
   const [role, setRole] = useState("");
   const [magazines, setMagazines] = useState([]);
   const [loading, setLoading] = useState(false);
-  let cookieData = document.cookie;
 
-  // useEffect(async () => {
-  //   const tokenData = JSON.parse(cookieData);
-  //   setRole(tokenData.role);
-  //   const accountData = await (
-  //     await fetch("http://localhost:3001/account/me", {
-  //       headers: {
-  //         "Content-type": "application/json",
-  //         "x-access-token": tokenData.token,
-  //       },
-  //       method: "GET",
-  //     })
-  //   ).json();
+  useEffect(() => {
+    const fetchData = async () => {
+      let cookieData = document.cookie;
+      const tokenData = JSON.parse(cookieData);
+      setLoading(true);
+      setRole(tokenData.role);
+      const magazinesData = await (
+        await fetch("http://localhost:3001/magazines", {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        })
+      ).json();
 
-  //   console.log("useEffect /me from Magazines container");
-  //   if (accountData.exitcode === 0) {
-  //     setMagazines(magazines.magazines);
-  //   }
-  // }, []);
-  useEffect(async () => {
-    const tokenData = JSON.parse(cookieData);
-    setRole(tokenData.role);
-    setLoading(true);
-    const magazinesData = await (
-      await fetch("http://localhost:3001/magazine", {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "GET",
-      })
-    ).json();
-
-    if (magazinesData.exitcode === 0) {
-      setLoading(false);
-      setMagazines(magazinesData.magazines);
-      console.log(magazinesData.magazines);
-    }
+      if (magazinesData.exitcode === 0) {
+        setLoading(false);
+        setMagazines(magazinesData.magazines);
+        console.log(magazinesData.magazines);
+      }
+    };
+    fetchData();
   }, []);
 
   const handleClick = () => {
@@ -123,7 +108,7 @@ const Magazines = () => {
           lg={4}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -158,12 +143,12 @@ const Magazines = () => {
             {loading ? (
               <CircularProgress></CircularProgress>
             ) : (
-              magazines.map((item, index) => {
+              magazines.map((item) => {
                 return (
-                  <Link to={`/magazine/${index}`}>
+                  <Link to={`/magazine/${item.id}`}>
                     <Magazine
-                      key={index}
-                      id={index}
+                      key={item.id}
+                      id={item.id}
                       name={item.name}
                       role={role}
                       closureDate={item.closureDate}

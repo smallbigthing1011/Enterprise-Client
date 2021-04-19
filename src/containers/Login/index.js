@@ -75,13 +75,14 @@ const Login = () => {
         }),
       })
     ).json();
+    console.log(token);
     if (token.message) {
       setOpen(true);
       setEmail("");
       setPassword("");
     } else {
       const data = await (
-        await fetch("http://localhost:3001/account/me", {
+        await fetch("http://localhost:3001/accounts/me", {
           headers: {
             "Content-type": "application/json",
             "x-access-token": token.token,
@@ -89,6 +90,7 @@ const Login = () => {
           method: "GET",
         })
       ).json();
+      console.log(data.message);
       let cookieSave = {
         token: token.token,
         role: data.account.role,
