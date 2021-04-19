@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Login = () => {
   let history = useHistory();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -70,14 +70,14 @@ const Login = () => {
         headers: { "Content-type": "application/json" },
         method: "POST",
         body: JSON.stringify({
-          username,
+          email,
           password,
         }),
       })
     ).json();
     if (token.message) {
       setOpen(true);
-      setUsername("");
+      setEmail("");
       setPassword("");
     } else {
       const data = await (
@@ -112,8 +112,8 @@ const Login = () => {
     }
     setOpen(false);
   };
-  const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
   };
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
@@ -129,7 +129,7 @@ const Login = () => {
         open={open}
         autoHideDuration={3500}
         onClose={handleClose}
-        message="Invalid username or password"
+        message="Invalid Email or Password"
         action={
           <React.Fragment>
             <Button color="secondary" size="small" onClick={handleClose}>
@@ -180,11 +180,11 @@ const Login = () => {
                       InputProps={{ className: classes.textfield }}
                       className={classes.text}
                       id="standard-secondary"
-                      label="Username"
+                      label="Email"
                       fullWidth
                       color="secondary"
-                      value={username}
-                      onChange={handleChangeUsername}
+                      value={email}
+                      onChange={handleChangeEmail}
                     ></TextField>
                   </Grid>
                   <Grid container justify="center" item md={12}>

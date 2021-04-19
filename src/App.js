@@ -44,7 +44,7 @@ function App() {
         <Route exact path="/magazines">
           <Magazines></Magazines>
         </Route>
-        <Route exact path="/magazines/:idmagazine">
+        <Route exact path="/magazine/:idmagazine">
           <MagazineDetail></MagazineDetail>
         </Route>
         <Route exact path="/account/:action">
@@ -53,22 +53,19 @@ function App() {
         <Route exact path="/account/:action/:idaccount">
           <AccountForm></AccountForm>
         </Route>
-        <Route exact path="/magazine/:action">
-          <MagazineForm></MagazineForm>
-        </Route>
         <Route exact path="/magazine/:action/:idmagazine">
           <MagazineForm></MagazineForm>
         </Route>
-        <Route exact path="/contributions/:action/:idcon">
+        <Route exact path="/contribution/:idcon">
           <ContributionDetail></ContributionDetail>
+        </Route>
+        <Route exact path="/contribution/:idcon/:idaccount/upload">
+          <UploadForm></UploadForm>
         </Route>
         {/* <Route exact path="/contributions/:conaction">
           <ContributionForm></ContributionForm>
         </Route>
-        
-        <Route exact path="/contributions/details/:idcon/upload">
-          <UploadForm></UploadForm>
-        </Route> */}
+         */}
       </Switch>
     </div>
   );

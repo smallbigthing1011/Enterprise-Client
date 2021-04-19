@@ -57,10 +57,10 @@ const Accounts = () => {
       })
     ).json();
     console.log("useEffect of containers Accounts");
-    setUser({
-      name: personalData.account.fullname,
-      username: personalData.account.username,
-    });
+    // setUser({
+    //   name: personalData.account.fullname,
+    //   email: personalData.account.email,
+    // });
     console.log(personalData);
   }, []);
 

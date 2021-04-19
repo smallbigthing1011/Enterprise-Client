@@ -1,5 +1,13 @@
-import { Box, makeStyles, Paper, CircularProgress } from "@material-ui/core";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  makeStyles,
+  Paper,
+} from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -34,8 +42,6 @@ const Magazine = (props) => {
       const returnTypeFinalClosure = new Date(props.finalClosureDate);
       const current = new Date();
 
-      // const convertedClosure =  returnTypeClosure.toDateString();
-      // const convertedFinalClosure = returnTypeFinalClosure.toDateString();
       let newDeadline = { ...deadline };
       newDeadline.closureDate = returnTypeClosure.toDateString();
       newDeadline.finalClosureDate = returnTypeFinalClosure.toDateString();
@@ -66,7 +72,18 @@ const Magazine = (props) => {
         className={classes.root}
         border={`4px solid ${border}`}
       >
-        <Box fontWeight="bold">{props.name}</Box>
+        <Box width="100%" display="flex" justifyContent="space-between">
+          <Box fontWeight="bold">{props.name}</Box>
+          {props.role === "admin" || props.role === "manager" ? (
+            <Link to={`/magazine/editMagazine/${props.id}`}>
+              <IconButton>
+                <EditIcon></EditIcon>
+              </IconButton>
+            </Link>
+          ) : (
+            ""
+          )}
+        </Box>
 
         {loading ? (
           <CircularProgress></CircularProgress>
@@ -81,8 +98,10 @@ const Magazine = (props) => {
             <Box>{deadline.finalClosureDate}</Box>
           </Box>
         )}
-        <Box className={classes.year}>{props.manager}</Box>
-        <Box className={classes.year}>{props.published_year}</Box>
+        <Box display="flex" justifyContent="space-between">
+          <Box className={classes.year}>{props.manager}</Box>
+          <Box className={classes.year}>{props.published_year}</Box>
+        </Box>
       </Box>
     </div>
   );

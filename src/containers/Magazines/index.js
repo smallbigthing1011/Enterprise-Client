@@ -5,6 +5,7 @@ import {
   Grid,
   makeStyles,
   ThemeProvider,
+  CircularProgress,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useEffect, useState } from "react";
@@ -60,6 +61,7 @@ const Magazines = () => {
   const [magazines, setMagazines] = useState([]);
   const [loading, setLoading] = useState(false);
   let cookieData = document.cookie;
+
   // useEffect(async () => {
   //   const tokenData = JSON.parse(cookieData);
   //   setRole(tokenData.role);
@@ -92,7 +94,6 @@ const Magazines = () => {
       })
     ).json();
 
-    console.log("useEffect from Magazines container");
     if (magazinesData.exitcode === 0) {
       setLoading(false);
       setMagazines(magazinesData.magazines);
@@ -154,22 +155,26 @@ const Magazines = () => {
             flexWrap="wrap"
             className={classes.wrapper}
           >
-            {loading
-              ? "loading..."
-              : magazines.map((item) => {
-                  return (
-                    <Link to="/magazines">
-                      <Magazine
-                        key={item.id}
-                        name={item.name}
-                        closureDate={item.closureDate}
-                        finalClosureDate={item.finalClosureDate}
-                        published_year={item.published_year}
-                        manager={item.manager.username}
-                      ></Magazine>
-                    </Link>
-                  );
-                })}
+            {loading ? (
+              <CircularProgress></CircularProgress>
+            ) : (
+              magazines.map((item, index) => {
+                return (
+                  <Link to={`/magazine/${index}`}>
+                    <Magazine
+                      key={index}
+                      id={index}
+                      name={item.name}
+                      role={role}
+                      closureDate={item.closureDate}
+                      finalClosureDate={item.finalClosureDate}
+                      published_year={item.published_year}
+                      manager={item.manager.username}
+                    ></Magazine>
+                  </Link>
+                );
+              })
+            )}
           </Box>
         </Grid>
       </Grid>

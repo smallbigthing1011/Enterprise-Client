@@ -76,6 +76,7 @@ const AccountForm = () => {
   const { action, idaccount } = useParams();
 
   const [close, setClose] = useState(true);
+  const [role, setRole] = useState("");
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -88,6 +89,11 @@ const AccountForm = () => {
     dob: "",
   });
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    setRole(tokenData.role);
+  }, []);
 
   useEffect(async () => {
     if (action !== "createAccount") {
@@ -232,45 +238,49 @@ const AccountForm = () => {
                 onChange={handleChangeUser}
               ></TextField>
 
-              {action === "createAccount" && (
-                <Box width="100%">
-                  <Grid item container xs={12} sm={12} md={12} lg={12}>
-                    <Grid item xs={12} sm={12} md={10} lg={10}>
-                      <TextField
-                        label="Password"
-                        variant="outlined"
-                        name="password"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        value={loading ? "generated..." : userInfo.password}
-                        onChange={handleChangeUser}
-                      ></TextField>
+              {action === "createAccount" ||
+                (action === "editAccount" && (
+                  <Box width="100%">
+                    <Grid item container xs={12} sm={12} md={12} lg={12}>
+                      <Grid item xs={12} sm={12} md={10} lg={10}>
+                        <TextField
+                          label="Password"
+                          variant="outlined"
+                          name="password"
+                          fullWidth
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          defaultValue={
+                            loading ? "generated..." : userInfo.password
+                          }
+                          onChange={handleChangeUser}
+                        ></TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={2} lg={2}>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={handleClickGenerate}
+                          fullWidth
+                          className={classes.btn}
+                        >
+                          Generate
+                        </Button>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={2} lg={2}>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleClickGenerate}
-                        fullWidth
-                        className={classes.btn}
-                      >
-                        Generate
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-              )}
+                  </Box>
+                ))}
 
               <FormControl variant="outlined" fullWidth>
                 <InputLabel id="role-select-label">Role</InputLabel>
                 <Select
                   labelId="role-select-label"
+                  disabled={action === "createAccount" ? false : true}
                   id="role-select"
                   defaultValue={userInfo.role}
                   name="role"
-                  onChange={action === "createAccount" && handleChangeUser}
+                  onChange={handleChangeUser}
                   label="Role"
                 >
                   <MenuItem value="admin">Admin</MenuItem>
@@ -293,6 +303,7 @@ const AccountForm = () => {
                 variant="outlined"
                 fullWidth
                 name="faculty"
+                disabled={role !== "admin" && role !== "manager" ? true : false}
                 defaultValue={userInfo.faculty}
                 onChange={handleChangeUser}
               ></TextField>

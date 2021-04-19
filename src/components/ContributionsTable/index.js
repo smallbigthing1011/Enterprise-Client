@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 // import DeleteIcon from "@material-ui/icons/Delete";
-const ContributionsTable = () => {
+const ContributionsTable = (props) => {
   const classes = useStyles();
   const [contributions, setContributions] = useState([]);
   useEffect(() => {
@@ -53,7 +53,7 @@ const ContributionsTable = () => {
             <TableRow>
               <TableCell>Contributors</TableCell>
               <TableCell>Title</TableCell>
-              <TableCell>Select</TableCell>
+              {props.role !== "student" ? <TableCell>Select</TableCell> : ""}
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -63,18 +63,22 @@ const ContributionsTable = () => {
                 <TableRow key={index}>
                   <TableCell>{item.contributors}</TableCell>
                   <TableCell>{item.title}</TableCell>
-                  <TableCell>
-                    <Checkbox
-                      checked={item.isSelected}
-                      onChange={(event) => {
-                        handleChange(item.title, event);
-                      }}
-                      inputProps={{ "aria-label": "primary checkbox" }}
-                    />
-                  </TableCell>
+                  {props.role !== "student" ? (
+                    <TableCell>
+                      <Checkbox
+                        checked={item.isSelected}
+                        onChange={(event) => {
+                          handleChange(item.title, event);
+                        }}
+                        inputProps={{ "aria-label": "primary checkbox" }}
+                      />
+                    </TableCell>
+                  ) : (
+                    ""
+                  )}
                   <TableCell>
                     <Link
-                      to={`/admin/contributions/details/${index}`}
+                      to={`/contribution/${index}`}
                       className={classes.link}
                     >
                       <Button>

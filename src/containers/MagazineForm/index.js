@@ -163,24 +163,24 @@ const MagazineForm = () => {
       console.log(updatedMagazine);
     }
   };
-  const handleClickDelete = async () => {
-    let cookieData = document.cookie;
-    const tokenData = JSON.parse(cookieData);
-    const deletedMagazine = await (
-      await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "DELETE",
-      })
-    ).json();
-    if (deletedMagazine.exitcode === 0) {
-      history.push("/magazines");
-    } else {
-      console.log(deletedMagazine);
-    }
-  };
+  // const handleClickDelete = async () => {
+  //   let cookieData = document.cookie;
+  //   const tokenData = JSON.parse(cookieData);
+  //   const deletedMagazine = await (
+  //     await fetch(`http://localhost:3001/magazine/${idmagazine}`, {
+  //       headers: {
+  //         "Content-type": "application/json",
+  //         "x-access-token": tokenData.token,
+  //       },
+  //       method: "DELETE",
+  //     })
+  //   ).json();
+  //   if (deletedMagazine.exitcode === 0) {
+  //     history.push("/magazines");
+  //   } else {
+  //     console.log(deletedMagazine);
+  //   }
+  // };
   return (
     <div>
       <Button
@@ -284,7 +284,7 @@ const MagazineForm = () => {
                 </Box>
               </ThemeProvider>
             )}
-            {action === "deleteMagazine" && (
+            {/* {action === "deleteMagazine" && (
               <ThemeProvider theme={theme}>
                 <Box className={classes.btngroup}>
                   <Button
@@ -296,7 +296,7 @@ const MagazineForm = () => {
                   </Button>
                 </Box>
               </ThemeProvider>
-            )}
+            )} */}
             {action === "viewMagazine" && ""}
           </Box>
         </Grid>

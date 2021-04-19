@@ -27,6 +27,7 @@ const AccountsTable = () => {
         method: "GET",
       })
     ).json();
+    console.log(accountsData);
     setAccounts(accountsData.accounts);
   }, []);
 
@@ -36,7 +37,6 @@ const AccountsTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Role</TableCell>
               <TableCell>Faculty</TableCell>
@@ -48,7 +48,6 @@ const AccountsTable = () => {
               if (account.email === "group4.greenwich@gmail.com") {
                 return (
                   <TableRow key={account.id}>
-                    <TableCell>{account.username}</TableCell>
                     <TableCell>{account.email}</TableCell>
                     <TableCell>{account.role}</TableCell>
                     <TableCell>{account.faculty}</TableCell>
@@ -58,7 +57,6 @@ const AccountsTable = () => {
               }
               return (
                 <TableRow key={account.id}>
-                  <TableCell>{account.username}</TableCell>
                   <TableCell>{account.email}</TableCell>
                   <TableCell>{account.role}</TableCell>
                   <TableCell>{account.faculty}</TableCell>

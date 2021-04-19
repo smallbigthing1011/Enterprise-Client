@@ -1,7 +1,7 @@
 import { Box, Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ContributionsTable, SideBar } from "../../components";
 
@@ -51,8 +51,14 @@ const useStyles = makeStyles({
   },
 });
 const MagazineDetail = () => {
-  const [close, setClose] = useState(false);
+  const [close, setClose] = useState(true);
+  const [role, setRole] = useState("");
   const classes = useStyles();
+  let cookieData = document.cookie;
+  useEffect(() => {
+    const tokenData = JSON.parse(cookieData);
+    setRole(tokenData.role);
+  }, []);
   const handleClick = () => {
     setClose(!close);
   };
@@ -97,14 +103,18 @@ const MagazineDetail = () => {
           </Box>
           <Box className={classes.table}>
             <Box>
-              <Box className={classes.add}>
-                <Link to="/admin/contributions/createContribution">
-                  <Button variant="text">
-                    <AddRoundedIcon></AddRoundedIcon> Create contribution
-                  </Button>
-                </Link>
-              </Box>
-              <ContributionsTable></ContributionsTable>
+              {role === "student" ? (
+                <Box className={classes.add}>
+                  <Link to="/admin/contributions/createContribution">
+                    <Button variant="text">
+                      <AddRoundedIcon></AddRoundedIcon> Create contribution
+                    </Button>
+                  </Link>
+                </Box>
+              ) : (
+                ""
+              )}
+              <ContributionsTable role={role}></ContributionsTable>
             </Box>
           </Box>
         </Grid>

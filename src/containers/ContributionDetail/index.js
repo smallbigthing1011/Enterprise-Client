@@ -10,7 +10,7 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import ModeCommentIcon from "@material-ui/icons/ModeComment";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { FilesTable, CommentBox, SideBar } from "../../components";
 
 const useStyles = makeStyles({
@@ -92,6 +92,7 @@ const theme = createMuiTheme({
   },
 });
 const ContributionDetail = () => {
+  const { idcon } = useParams();
   const [closeSideBar, setCloseSideBar] = useState(true);
   const [closeComment, setCloseComment] = useState(true);
   const classes = useStyles();
