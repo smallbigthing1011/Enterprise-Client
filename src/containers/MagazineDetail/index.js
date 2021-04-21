@@ -1,7 +1,8 @@
 import { Box, Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { ContributionsTable, SideBar } from "../../components";
 
@@ -53,11 +54,26 @@ const useStyles = makeStyles({
 const MagazineDetail = () => {
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
+  const [magazine, setMagazine] = useState("");
+  const { idmagazine } = useParams();
   const classes = useStyles();
   let cookieData = document.cookie;
   useEffect(() => {
-    const tokenData = JSON.parse(cookieData);
-    setRole(tokenData.role);
+    const fetchData = async () => {
+      const tokenData = JSON.parse(cookieData);
+      const magazineData = await (
+        await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        })
+      ).json();
+      setMagazine(magazineData.magazine);
+      setRole(tokenData.role);
+    };
+    fetchData();
   }, []);
   const handleClick = () => {
     setClose(!close);
@@ -81,7 +97,7 @@ const MagazineDetail = () => {
           lg={4}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -98,14 +114,19 @@ const MagazineDetail = () => {
         >
           <Box className={classes.title}>
             <Typography variant="h5" align="right">
-              {2021}
+              {magazine.name}
             </Typography>
+            <Typography variant="h5" align="right">
+              {magazine.published_year}
+            </Typography>
+            {role === "admin" && <Button>Download all</Button>}
+            {role === "manager" && <Button>Download all</Button>}
           </Box>
           <Box className={classes.table}>
             <Box>
               {role === "student" ? (
                 <Box className={classes.add}>
-                  <Link to="/admin/contributions/createContribution">
+                  <Link to={`/contribution/${idmagazine}/upload`}>
                     <Button variant="text">
                       <AddRoundedIcon></AddRoundedIcon> Create contribution
                     </Button>

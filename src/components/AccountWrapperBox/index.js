@@ -1,8 +1,8 @@
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
-import React from "react";
 import { Link } from "react-router-dom";
 import AccountsTable from "../AccountsTable";
+
 const useStyles = makeStyles({
   root: {
     display: "flex",

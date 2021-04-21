@@ -6,7 +6,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -62,6 +62,9 @@ const Magazine = (props) => {
       console.log(error);
     }
   }, []);
+  const handleClick = (event) => {
+    event.stopPropagation();
+  };
   return (
     <div>
       <Box
@@ -76,7 +79,7 @@ const Magazine = (props) => {
           <Box fontWeight="bold">{props.name}</Box>
           {props.role === "admin" || props.role === "manager" ? (
             <Link to={`/magazine/editMagazine/${props.id}`}>
-              <IconButton>
+              <IconButton onClick={handleClick}>
                 <EditIcon></EditIcon>
               </IconButton>
             </Link>

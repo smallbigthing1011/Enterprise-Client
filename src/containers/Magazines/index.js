@@ -1,14 +1,14 @@
 import {
   Box,
   Button,
+  CircularProgress,
   createMuiTheme,
   Grid,
   makeStyles,
   ThemeProvider,
-  CircularProgress,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Magazine, SideBar } from "../../components";
 
@@ -78,9 +78,8 @@ const Magazines = () => {
       ).json();
 
       if (magazinesData.exitcode === 0) {
-        setLoading(false);
         setMagazines(magazinesData.magazines);
-        console.log(magazinesData.magazines);
+        setLoading(false);
       }
     };
     fetchData();
@@ -145,7 +144,7 @@ const Magazines = () => {
             ) : (
               magazines.map((item) => {
                 return (
-                  <Link to={`/magazine/${item.id}`}>
+                  <Link to={`/magazine/${item.id}/detail/contributions`}>
                     <Magazine
                       key={item.id}
                       id={item.id}

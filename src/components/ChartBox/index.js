@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { Chart, registerables } from "chart.js";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const useStyles = makeStyles({
   chart: {

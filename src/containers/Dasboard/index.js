@@ -6,7 +6,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ChartBox, SideBar } from "../../components";
 
@@ -45,7 +45,7 @@ const Dashboard = () => {
   const history = useHistory();
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
-  const [user, setUser] = useState({});
+
   let cookieData = document.cookie;
   useEffect(() => {
     const tokenData = JSON.parse(cookieData);

@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import crypto from "crypto-random-string";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
 

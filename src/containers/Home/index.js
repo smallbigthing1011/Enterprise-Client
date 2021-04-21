@@ -1,8 +1,8 @@
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import "fontsource-roboto";
-import React from "react";
 import { Link } from "react-router-dom";
 import background from "../../images/bg-gw.png";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

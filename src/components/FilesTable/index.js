@@ -6,82 +6,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
   },
 });
-const FilesTable = () => {
+
+const FilesTable = (props) => {
   const classes = useStyles();
-  const [files, setFiles] = useState([]);
-  useEffect(() => {
-    setFiles([
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-      {
-        date: "10/04/2021",
-        uploads: ["file1.doc", "file2.png"],
-        comments: ["okay"],
-      },
-    ]);
-  }, []);
 
   return (
     <div>
@@ -94,14 +28,14 @@ const FilesTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {files.map((files, index) => {
+            {props.files.map((file) => {
               return (
-                <TableRow key={index}>
-                  <TableCell>{files.date}</TableCell>
+                <TableRow key={file.id}>
+                  <TableCell>{file.createdAt}</TableCell>
                   <TableCell>
-                    {files.uploads.map((upload) => {
-                      return <Typography>{upload}</Typography>;
-                    })}
+                    <a href={`http://localhost:3001/files/${file.id}`}>
+                      {file.filename}
+                    </a>
                   </TableCell>
                 </TableRow>
               );

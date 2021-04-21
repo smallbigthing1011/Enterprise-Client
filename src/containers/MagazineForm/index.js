@@ -1,16 +1,16 @@
 import {
   Box,
   Button,
+  CircularProgress,
   createMuiTheme,
   Grid,
   makeStyles,
   Paper,
   TextField,
   ThemeProvider,
-  CircularProgress,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
 
@@ -69,6 +69,7 @@ const MagazineForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const { action, idmagazine } = useParams();
+
   const [close, setClose] = useState(true);
   const [loading, setLoading] = useState(false);
   const [magazineInfo, setMagazineInfo] = useState({
@@ -83,6 +84,7 @@ const MagazineForm = () => {
     const fetchData = async () => {
       let cookieData = document.cookie;
       const tokenData = JSON.parse(cookieData);
+      setLoading(true);
       const account = await (
         await fetch(`http://localhost:3001/accounts/me`, {
           headers: {
@@ -97,18 +99,18 @@ const MagazineForm = () => {
         let newMagazineInfo = { ...magazineInfo };
         newMagazineInfo.manager_id = account.account.id;
         setMagazineInfo(newMagazineInfo);
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
   useEffect(() => {
     const fetchData = async () => {
-      console.log(magazineInfo.manager_id);
       if (action !== "createMagazine") {
         let cookieData = document.cookie;
         const tokenData = JSON.parse(cookieData);
         setLoading(true);
-        const magazine = await (
+        const magazineData = await (
           await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
             headers: {
               "Content-type": "application/json",
@@ -117,8 +119,24 @@ const MagazineForm = () => {
             method: "GET",
           })
         ).json();
-        if (magazine.exitcode === 0) {
-          setMagazineInfo(magazine.magazine);
+
+        if (magazineData.exitcode === 0) {
+          const convertedClosureDate = new Date(
+            magazineData.magazine.closureDate
+          );
+          const convertedFinalClosureDate = new Date(
+            magazineData.magazine.finalClosureDate
+          );
+          const newMagazineInfo = {
+            manager_id: magazineData.magazine.manager._id,
+            name: magazineData.magazine.name,
+            published_year: magazineData.magazine.published_year,
+            closureDate: convertedClosureDate.toISOString().substr(0, 10),
+            finalClosureDate: convertedFinalClosureDate
+              .toISOString()
+              .substr(0, 10),
+          };
+          setMagazineInfo(newMagazineInfo);
           setLoading(false);
         }
       }
@@ -147,10 +165,9 @@ const MagazineForm = () => {
         body: JSON.stringify(magazineInfo),
       })
     ).json();
-    console.log(newMagazine);
-    // if (newMagazine.exitcode === 0) {
-    //   history.push("/magazines");
-    // } else console.log(newMagazine);
+    if (newMagazine.exitcode === 0) {
+      history.push("/magazines");
+    } else console.log(newMagazine);
   };
 
   const handleClickUpdate = async () => {
@@ -216,7 +233,7 @@ const MagazineForm = () => {
                 variant="outlined"
                 fullWidth
                 name="name"
-                defaultValue={magazineInfo.name}
+                value={magazineInfo.name}
                 onChange={handleChangeMagazine}
               ></TextField>
               <TextField
@@ -225,7 +242,7 @@ const MagazineForm = () => {
                 fullWidth
                 type="number"
                 name="published_year"
-                defaultValue={magazineInfo.published_year}
+                value={magazineInfo.published_year}
                 onChange={handleChangeMagazine}
               ></TextField>
               <TextField
@@ -237,7 +254,7 @@ const MagazineForm = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                defaultValue={magazineInfo.closureDate}
+                value={magazineInfo.closureDate}
                 onChange={handleChangeMagazine}
               ></TextField>
               <TextField
@@ -249,7 +266,7 @@ const MagazineForm = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                defaultValue={magazineInfo.finalClosureDate}
+                value={magazineInfo.finalClosureDate}
                 onChange={handleChangeMagazine}
               ></TextField>
               {action === "createMagazine" && (

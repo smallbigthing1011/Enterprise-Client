@@ -9,8 +9,8 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +67,34 @@ const theme = createMuiTheme({
 const ContributionForm = () => {
   const classes = useStyles();
   const [close, setClose] = useState(false);
-  const { conaction } = useParams();
+  const [title, setTitle] = useState("");
+  const { idcon } = useParams();
+  const history = useHistory();
+
+  useEffect(() => {
+    console.log(idcon);
+  });
+  const handleClickSave = async () => {
+    const cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    const updatedContribution = await (
+      await fetch(`http://localhost:3001/contributions/${idcon}`, {
+        headers: {
+          "Content-type": "application/json",
+          "x-access-token": tokenData.token,
+        },
+        body: JSON.stringify({ title }),
+        method: "PUT",
+      })
+    ).json();
+    if (updatedContribution.exitcode === 0) {
+      history.push(`/contribution/${idcon}`);
+    }
+  };
+
+  const handleChange = (event) => {
+    setTitle(event.target.value);
+  };
   const handleClick = () => {
     setClose(!close);
   };
@@ -90,7 +117,7 @@ const ContributionForm = () => {
           lg={3}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -105,40 +132,24 @@ const ContributionForm = () => {
           justify="center"
         >
           <Box component={Paper} className={classes.papper} padding={3}>
-            <TextField label="Name" variant="outlined" fullWidth></TextField>
-
             <TextField
-              label="Closure Date"
-              type="date"
+              label="Title"
               variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
               fullWidth
+              onChange={handleChange}
             ></TextField>
 
-            <TextField
-              label="Final Closure Date"
-              type="date"
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-            ></TextField>
-
-            {conaction === "createContribution" ||
-            conaction === "editContribution" ? (
-              <ThemeProvider theme={theme}>
-                <Box className={classes.btngroup}>
-                  <Button variant="contained" color="secondary">
-                    Save
-                  </Button>
-                </Box>
-              </ThemeProvider>
-            ) : (
-              ""
-            )}
+            <ThemeProvider theme={theme}>
+              <Box className={classes.btngroup}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleClickSave}
+                >
+                  Save
+                </Button>
+              </Box>
+            </ThemeProvider>
           </Box>
         </Grid>
       </Grid>

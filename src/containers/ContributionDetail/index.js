@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ModeCommentIcon from "@material-ui/icons/ModeComment";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FilesTable, CommentBox, SideBar } from "../../components";
 
@@ -73,9 +73,6 @@ const useStyles = makeStyles({
     boxShadow: " 0px -10px 37px 0px rgba(0,0,0,0.2)",
     minHeight: "80%",
     width: "100%",
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
   },
   title: {
     textAlign: "right",
@@ -94,14 +91,37 @@ const theme = createMuiTheme({
 const ContributionDetail = () => {
   const { idcon } = useParams();
   const [closeSideBar, setCloseSideBar] = useState(true);
-  const [closeComment, setCloseComment] = useState(true);
+  const [closeComment, setCloseComment] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [role, setRole] = useState("");
   const classes = useStyles();
+  let cookieData = document.cookie;
   const handleClickSideBar = () => {
     setCloseSideBar(!closeSideBar);
   };
   const handleClickComment = () => {
     setCloseComment(!closeComment);
   };
+  useEffect(() => {
+    console.log(idcon);
+    const fetchData = async () => {
+      const tokenData = JSON.parse(cookieData);
+      setRole(tokenData.role);
+      const contributionData = await (
+        await fetch(`http://localhost:3001/contributions/${idcon}`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        })
+      ).json();
+      if (contributionData.exitcode === 0) {
+        setFiles(contributionData.contribution.files);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <Button
@@ -121,7 +141,7 @@ const ContributionDetail = () => {
           lg={3}
           className={closeSideBar ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {closeSideBar ? "" : <SideBar rolebase="admin"></SideBar>}
+          {closeSideBar ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -141,7 +161,7 @@ const ContributionDetail = () => {
           </Box>
           <ThemeProvider theme={theme}>
             <Box width="100%" display="flex" justifyContent="flex-end">
-              <Link to="/contribution/1/1/upload">
+              <Link to={`/contribution/${idcon}/submit`}>
                 <Button variant="contained" color="secondary">
                   Submit
                 </Button>
@@ -152,7 +172,7 @@ const ContributionDetail = () => {
             </Box>
           </ThemeProvider>
           <Box className={classes.table}>
-            <FilesTable></FilesTable>
+            <FilesTable files={files}></FilesTable>
           </Box>
         </Grid>
 
@@ -162,8 +182,8 @@ const ContributionDetail = () => {
           justify="center"
           xs={5}
           sm={5}
-          md={3}
-          lg={3}
+          md={5}
+          lg={5}
           className={closeComment ? classes.commentClose : classes.commentOpen}
         >
           {closeComment ? "" : <CommentBox></CommentBox>}

@@ -6,13 +6,18 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  IconButton,
   makeStyles,
   Paper,
+  Snackbar,
   TextField,
   ThemeProvider,
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -68,13 +73,118 @@ const theme = createMuiTheme({
 });
 const UploadForm = () => {
   const classes = useStyles();
-  //   const { conaction } = useParams();
+  const history = useHistory();
+  const { idmagazine, action, idcon } = useParams();
   const [close, setClose] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [agree, setAgree] = useState(false);
+  const [sarticle, setSarticle] = useState(null);
+  const [spictures, setSpictures] = useState(null);
+  useEffect(() => {
+    console.log(idcon, action, idmagazine);
+  }, []);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
   const handleClick = () => {
     setClose(!close);
   };
+  const handleChange = (event) => {
+    setTitle(event.target.value);
+  };
+  const handleChangeAgree = () => {
+    setAgree(!agree);
+  };
+  const handleChangeArticle = (event) => {
+    setSarticle(event.target.files[0]);
+  };
+  const handleChangePictures = (event) => {
+    setSpictures(event.target.files);
+  };
+  const handleClickSave = () => {
+    if (action === "upload") {
+      if (agree === false) setOpen(true);
+      else {
+        let cookieData = document.cookie;
+        const tokenData = JSON.parse(cookieData);
+        const data = new FormData();
+        data.append("magazine", idmagazine);
+        data.append("title", title);
+        data.append("article", sarticle);
+        let pictures = Array.from(spictures);
+        pictures.forEach((picture) => data.append("pictures", picture));
+        data.append("agreement", agree);
+        axios
+          .post("http://localhost:3001/contributions", data, {
+            headers: {
+              "x-access-token": tokenData.token,
+            },
+          })
+          .then((res) => {
+            if (res.statusText === "OK") {
+              history.push("/magazines");
+            }
+          });
+      }
+    } else if (action === "submit") {
+      if (agree === false) setOpen(true);
+      else {
+        let cookieData = document.cookie;
+        const tokenData = JSON.parse(cookieData);
+        const data = new FormData();
+        data.append("title", title);
+        data.append("article", sarticle);
+        let pictures = Array.from(spictures);
+        pictures.forEach((picture) => data.append("pictures", picture));
+        data.append("agreement", agree);
+        axios
+          .post(`http://localhost:3001/files/contribution/${idcon}`, data, {
+            headers: {
+              "x-access-token": tokenData.token,
+            },
+          })
+          .then((res) => {
+            if (res.statusText === "OK") {
+              history.push("/magazines");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+  };
   return (
     <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        open={open}
+        autoHideDuration={3500}
+        onClose={handleClose}
+        message="You must agree to the terms and conditions!"
+        action={
+          <React.Fragment>
+            <Button color="secondary" size="small" onClick={handleClose}>
+              Close
+            </Button>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
       <Button
         className={close ? classes.menuBtnClose : classes.menuBtnOpen}
         onClick={handleClick}
@@ -92,7 +202,7 @@ const UploadForm = () => {
           lg={4}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
-          {close ? "" : <SideBar rolebase="admin"></SideBar>}
+          {close ? "" : <SideBar></SideBar>}
         </Grid>
 
         <Grid
@@ -108,32 +218,41 @@ const UploadForm = () => {
         >
           <Box component={Paper} className={classes.papper} padding={3}>
             <TextField
-              label="Your contribution name"
+              label="Title"
+              name="title"
               variant="outlined"
               fullWidth
+              onChange={handleChange}
             ></TextField>
-
-            <TextField
-              label="Choose file"
+            <label for="article">Choose Article</label>
+            <input
               type="file"
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              inputProps={{
-                multiple: true,
-              }}
-              fullWidth
-            ></TextField>
-            <FormGroup row>
+              name="article"
+              accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.pdf"
+              onChange={handleChangeArticle}
+            ></input>
+            <label for="pictures">Choose Picture</label>
+            <input
+              type="file"
+              name="pictures"
+              multiple
+              accept="image/*"
+              onChange={handleChangePictures}
+            ></input>
+
+            <FormGroup row name="agreement" onChange={handleChangeAgree}>
               <FormControlLabel
-                control={<Checkbox name="checkAgree" color="primary" />}
+                control={<Checkbox color="primary" />}
                 label="I agree to all Terms and Conditions"
               />
             </FormGroup>
             <ThemeProvider theme={theme}>
               <Box className={classes.btngroup}>
-                <Button variant="contained" color="secondary">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleClickSave}
+                >
                   Save
                 </Button>
               </Box>

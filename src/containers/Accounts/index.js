@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Grid, makeStyles } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { AccountWrapperBox, SideBar } from "../../components";
 
