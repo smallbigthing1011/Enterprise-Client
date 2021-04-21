@@ -75,7 +75,7 @@ const Login = () => {
         }),
       })
     ).json();
-    console.log(token);
+
     if (token.message) {
       setOpen(true);
       setEmail("");
@@ -90,10 +90,14 @@ const Login = () => {
           method: "GET",
         })
       ).json();
-      console.log(data.message);
+
       let cookieSave = {
         token: token.token,
+        id: data.account.id,
         role: data.account.role,
+        faculty: data.account.faculty,
+        fullname: data.account.fullname,
+        email: data.account.email,
       };
       document.cookie = JSON.stringify(cookieSave);
       if (data.account.role === "admin" || data.account.role === "manager") {

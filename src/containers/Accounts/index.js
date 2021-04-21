@@ -46,24 +46,11 @@ const Accounts = () => {
     }
   });
   useEffect(() => {
-    const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-      const personalData = await (
-        await fetch("http://localhost:3001/accounts/me", {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-
-      setUser({
-        name: personalData.account.fullname,
-        email: personalData.account.email,
-      });
-    };
-    fetchData();
+    const tokenData = JSON.parse(cookieData);
+    setUser({
+      name: tokenData.name,
+      email: tokenData.email,
+    });
   }, []);
 
   const handleClick = () => {
@@ -87,8 +74,8 @@ const Accounts = () => {
               justify="center"
               xs={4}
               sm={4}
-              md={4}
-              lg={4}
+              md={2}
+              lg={2}
               className={close ? classes.sidebarClose : classes.sidebarOpen}
             >
               {close ? "" : <SideBar></SideBar>}

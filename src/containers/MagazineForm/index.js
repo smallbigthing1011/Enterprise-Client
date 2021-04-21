@@ -81,28 +81,11 @@ const MagazineForm = () => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      let cookieData = document.cookie;
-      const tokenData = JSON.parse(cookieData);
-      setLoading(true);
-      const account = await (
-        await fetch(`http://localhost:3001/accounts/me`, {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-
-      if (account.exitcode === 0) {
-        let newMagazineInfo = { ...magazineInfo };
-        newMagazineInfo.manager_id = account.account.id;
-        setMagazineInfo(newMagazineInfo);
-        setLoading(false);
-      }
-    };
-    fetchData();
+    let cookieData = document.cookie;
+    const tokenData = JSON.parse(cookieData);
+    let newMagazineInfo = { ...magazineInfo };
+    newMagazineInfo.manager_id = tokenData.id;
+    setMagazineInfo(newMagazineInfo);
   }, []);
   useEffect(() => {
     const fetchData = async () => {
@@ -167,7 +150,7 @@ const MagazineForm = () => {
     ).json();
     if (newMagazine.exitcode === 0) {
       history.push("/magazines");
-    } else console.log(newMagazine);
+    }
   };
 
   const handleClickUpdate = async () => {
@@ -186,8 +169,6 @@ const MagazineForm = () => {
     ).json();
     if (updatedMagazine.exitcode === 0) {
       history.push("/magazines");
-    } else {
-      console.log(updatedMagazine);
     }
   };
 
@@ -206,8 +187,8 @@ const MagazineForm = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={3}
-          lg={3}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}

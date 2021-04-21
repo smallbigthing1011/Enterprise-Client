@@ -55,9 +55,11 @@ const MagazineDetail = () => {
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
   const [magazine, setMagazine] = useState("");
+  const [magazineState, setMagazineState] = useState(0);
   const { idmagazine } = useParams();
   const classes = useStyles();
   let cookieData = document.cookie;
+
   useEffect(() => {
     const fetchData = async () => {
       const tokenData = JSON.parse(cookieData);
@@ -71,6 +73,17 @@ const MagazineDetail = () => {
         })
       ).json();
       setMagazine(magazineData.magazine);
+      const current = new Date();
+      const closureDate = new Date(magazineData.magazine.closureDate);
+      const finalClosureDate = new Date(magazineData.magazine.finalClosureDate);
+      if (current < closureDate) {
+        setMagazineState(0);
+      } else if (current > finalClosureDate) {
+        setMagazineState(2);
+      } else {
+        setMagazineState(1);
+      }
+
       setRole(tokenData.role);
     };
     fetchData();
@@ -93,8 +106,8 @@ const MagazineDetail = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={4}
-          lg={4}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}
@@ -126,16 +139,25 @@ const MagazineDetail = () => {
             <Box>
               {role === "student" ? (
                 <Box className={classes.add}>
-                  <Link to={`/contribution/${idmagazine}/upload`}>
-                    <Button variant="text">
+                  {magazineState === 0 ? (
+                    <Link to={`/upload/${idmagazine}/upload`}>
+                      <Button variant="text">
+                        <AddRoundedIcon></AddRoundedIcon> Create contribution
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button variant="text" disabled>
                       <AddRoundedIcon></AddRoundedIcon> Create contribution
                     </Button>
-                  </Link>
+                  )}
                 </Box>
               ) : (
                 ""
               )}
-              <ContributionsTable role={role}></ContributionsTable>
+              <ContributionsTable
+                role={role}
+                state={magazineState}
+              ></ContributionsTable>
             </Box>
           </Box>
         </Grid>

@@ -23,39 +23,15 @@ const useStyles = makeStyles({
 const ContributionsTable = (props) => {
   const classes = useStyles();
   const [contributions, setContributions] = useState([]);
-  const [accId, setAccId] = useState("");
 
-  const [faculty, setFaculty] = useState("");
   let cookieData = document.cookie;
+  const tokenData = JSON.parse(cookieData);
   useEffect(() => {
-    const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-
-      const accountData = await (
-        await fetch(`http://localhost:3001/accounts/me`, {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-      if (accountData.exitcode === 0) {
-        setFaculty(accountData.account.faculty);
-        setAccId(accountData.account.id);
-      }
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    console.log(faculty);
-    const tokenData = JSON.parse(cookieData);
-
     const fetchData = async () => {
       if (tokenData.role === "coordinator") {
         const contributionsData = await (
           await fetch(
-            `http://localhost:3001/contributions/faculty/${faculty}`,
+            `http://localhost:3001/contributions/faculty/${tokenData.faculty}`,
             {
               headers: {
                 "Content-type": "application/json",
@@ -65,7 +41,7 @@ const ContributionsTable = (props) => {
             }
           )
         ).json();
-        setContributions(contributionsData.contributions);
+        setContributions(contributionsData.contribution);
       } else if (tokenData.role === "student") {
         const contributionsData = await (
           await fetch(`http://localhost:3001/contributions/account`, {
@@ -79,7 +55,7 @@ const ContributionsTable = (props) => {
         setContributions(contributionsData.contributions);
       } else if (tokenData.role === "manager" || tokenData.role === "admin") {
         const contributionsData = await (
-          await fetch("http://localhost:3001/contributions", {
+          await fetch("http://localhost:3001/contributions/selected", {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
@@ -87,27 +63,61 @@ const ContributionsTable = (props) => {
             method: "GET",
           })
         ).json();
-        const selectedCon = contributionsData.contributions.filter(
-          (item) => item.isSelected === true
-        );
-        setContributions(selectedCon);
-        console.log(contributionsData);
+        setContributions(contributionsData.contributions);
+      } else if (tokenData.role === "guest") {
+        const contributionsData = await (
+          await fetch(
+            `http://localhost:3001/contributions/faculty/${tokenData.faculty}/selected`,
+            {
+              headers: {
+                "Content-type": "application/json",
+                "x-access-token": tokenData.token,
+              },
+              method: "GET",
+            }
+          )
+        ).json();
+        setContributions(contributionsData.contributions);
       }
     };
     fetchData();
   }, []);
-  const handleChange = (id, event) => {
+  const handleChange = async (id, event) => {
     let contriIndex = contributions.findIndex((ele) => {
-      return ele.title === id;
+      return ele.id === id;
     });
-    let updatedContri = contributions[contriIndex];
-    updatedContri.isSelected = event.target.checked;
-    setContributions([
-      ...contributions.slice(0, contriIndex),
-      updatedContri,
-      ...contributions.slice(contriIndex + 1),
-    ]);
-    console.log(contriIndex, updatedContri.isSelected);
+
+    if (event.target.checked === true) {
+      const contributionSelected = await (
+        await fetch(`http://localhost:3001/contributions/${id}/select`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "PUT",
+        })
+      ).json();
+      setContributions([
+        ...contributions.slice(0, contriIndex),
+        contributionSelected.contribution,
+        ...contributions.slice(contriIndex + 1),
+      ]);
+    } else {
+      const contributionSelected = await (
+        await fetch(`http://localhost:3001/contributions/${id}/deselect`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "PUT",
+        })
+      ).json();
+      setContributions([
+        ...contributions.slice(0, contriIndex),
+        contributionSelected.contribution,
+        ...contributions.slice(contriIndex + 1),
+      ]);
+    }
   };
   return (
     <div>
@@ -135,7 +145,9 @@ const ContributionsTable = (props) => {
                           <Checkbox
                             checked={item.isSelected}
                             onChange={(event) => {
-                              handleChange(item.title, event);
+                              if (props.role === "coordinator") {
+                                handleChange(item.id, event);
+                              }
                             }}
                             inputProps={{ "aria-label": "primary checkbox" }}
                           />
@@ -145,7 +157,7 @@ const ContributionsTable = (props) => {
                       )}
                       <TableCell>
                         <Link
-                          to={`/contribution/${item.id}`}
+                          to={`/contribution/${item.id}/${props.state}`}
                           className={classes.link}
                         >
                           <Button>

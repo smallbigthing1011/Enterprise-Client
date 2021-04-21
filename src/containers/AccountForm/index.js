@@ -74,11 +74,9 @@ const AccountForm = () => {
   const classes = useStyles();
   const history = useHistory();
   const { action, idaccount } = useParams();
-  console.log(action);
 
   const [close, setClose] = useState(true);
   const [role, setRole] = useState("");
-  // const [message, setMessage] = setState("");
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
@@ -174,8 +172,6 @@ const AccountForm = () => {
       } else {
         history.push("/magazines");
       }
-    } else {
-      console.log(updatedAccount);
     }
   };
   const handleClickDelete = async () => {
@@ -192,8 +188,6 @@ const AccountForm = () => {
     ).json();
     if (deletedAccount.exitcode === 0) {
       history.push("/accounts");
-    } else {
-      console.log(deletedAccount);
     }
   };
   return (
@@ -211,8 +205,8 @@ const AccountForm = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={3}
-          lg={3}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}

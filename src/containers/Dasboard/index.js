@@ -54,24 +54,6 @@ const Dashboard = () => {
       history.push("/oops");
     }
   }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-      const personalData = await (
-        await fetch("http://localhost:3001/account/me", {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-      console.log("useEffect of containers Accounts");
-
-      console.log(personalData);
-      fetchData();
-    };
-  }, []);
 
   const handleClick = () => {
     setClose(!close);
@@ -94,8 +76,8 @@ const Dashboard = () => {
               justify="center"
               xs={4}
               sm={4}
-              md={4}
-              lg={4}
+              md={2}
+              lg={2}
               className={close ? classes.sidebarClose : classes.sidebarOpen}
             >
               {close ? "" : <SideBar rolebase="admin"></SideBar>}

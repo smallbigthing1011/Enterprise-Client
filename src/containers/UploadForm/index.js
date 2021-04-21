@@ -81,9 +81,7 @@ const UploadForm = () => {
   const [agree, setAgree] = useState(false);
   const [sarticle, setSarticle] = useState(null);
   const [spictures, setSpictures] = useState(null);
-  useEffect(() => {
-    console.log(idcon, action, idmagazine);
-  }, []);
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -148,9 +146,7 @@ const UploadForm = () => {
             },
           })
           .then((res) => {
-            if (res.statusText === "OK") {
-              history.push("/magazines");
-            }
+            history.push("/magazines");
           })
           .catch((err) => {
             console.log(err);
@@ -198,8 +194,8 @@ const UploadForm = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={4}
-          lg={4}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}

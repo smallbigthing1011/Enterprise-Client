@@ -103,8 +103,8 @@ const Magazines = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={4}
-          lg={4}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}

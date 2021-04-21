@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     flexDirection: "column",
   },
   item: {
@@ -44,22 +44,9 @@ function SideBar() {
   const [id, setId] = useState("");
   let cookieData = document.cookie;
   useEffect(() => {
-    const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-      const personalData = await (
-        await fetch("http://localhost:3001/accounts/me", {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-      console.log("sidebar useEffect");
-      setRole(personalData.account.role);
-      setId(personalData.account.id);
-    };
-    fetchData();
+    const tokenData = JSON.parse(cookieData);
+    setRole(tokenData.role);
+    setId(tokenData.id);
   }, []);
 
   const handleClickLogout = () => {
@@ -69,10 +56,7 @@ function SideBar() {
 
   return (
     <div className={classes.root}>
-      <Typography
-        className={classes.role}
-        variant="h6"
-      >{`Role - ${role}`}</Typography>
+      <Typography className={classes.role} variant="h6"></Typography>
       <List className={classes.item}>
         {role === "admin" && (
           <Box>
@@ -127,6 +111,20 @@ function SideBar() {
           </Box>
         )}
         {role === "student" && (
+          <Box>
+            <Link to={`/account/editAccount/${id}`} className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Profile" />
+              </ListItem>
+            </Link>
+            <Link to="/magazines" className={classes.link}>
+              <ListItem button>
+                <ListItemText primary="Magazines" />
+              </ListItem>
+            </Link>
+          </Box>
+        )}
+        {role === "guest" && (
           <Box>
             <Link to={`/account/editAccount/${id}`} className={classes.link}>
               <ListItem button>

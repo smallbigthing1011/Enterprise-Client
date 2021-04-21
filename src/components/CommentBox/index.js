@@ -36,22 +36,9 @@ function CommentBox() {
   const [name, setName] = useState("");
   let cookieData = document.cookie;
   useEffect(() => {
-    const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-
-      const accountData = await (
-        await fetch(`http://localhost:3001/accounts/me`, {
-          headers: {
-            "Content-type": "application/json",
-            "x-access-token": tokenData.token,
-          },
-          method: "GET",
-        })
-      ).json();
-      setUserId(accountData.account.id);
-      setName(accountData.account.email);
-    };
-    fetchData();
+    const tokenData = JSON.parse(cookieData);
+    setUserId(tokenData.id);
+    setName(tokenData.email);
   }, []);
   useEffect(() => {
     setCommentBox([

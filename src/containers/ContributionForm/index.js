@@ -71,9 +71,6 @@ const ContributionForm = () => {
   const { idcon } = useParams();
   const history = useHistory();
 
-  useEffect(() => {
-    console.log(idcon);
-  });
   const handleClickSave = async () => {
     const cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
@@ -113,8 +110,8 @@ const ContributionForm = () => {
           justify="center"
           xs={4}
           sm={4}
-          md={3}
-          lg={3}
+          md={2}
+          lg={2}
           className={close ? classes.sidebarClose : classes.sidebarOpen}
         >
           {close ? "" : <SideBar></SideBar>}

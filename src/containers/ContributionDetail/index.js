@@ -89,11 +89,13 @@ const theme = createMuiTheme({
   },
 });
 const ContributionDetail = () => {
-  const { idcon } = useParams();
+  const { idcon, state } = useParams();
   const [closeSideBar, setCloseSideBar] = useState(true);
-  const [closeComment, setCloseComment] = useState(false);
+  const [closeComment, setCloseComment] = useState(true);
   const [files, setFiles] = useState([]);
   const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+
   const classes = useStyles();
   let cookieData = document.cookie;
   const handleClickSideBar = () => {
@@ -103,10 +105,10 @@ const ContributionDetail = () => {
     setCloseComment(!closeComment);
   };
   useEffect(() => {
-    console.log(idcon);
+    const tokenData = JSON.parse(cookieData);
+    setRole(tokenData.role);
+
     const fetchData = async () => {
-      const tokenData = JSON.parse(cookieData);
-      setRole(tokenData.role);
       const contributionData = await (
         await fetch(`http://localhost:3001/contributions/${idcon}`, {
           headers: {
@@ -118,6 +120,7 @@ const ContributionDetail = () => {
       ).json();
       if (contributionData.exitcode === 0) {
         setFiles(contributionData.contribution.files);
+        setEmail(contributionData.contribution.contributorEmail);
       }
     };
     fetchData();
@@ -135,10 +138,10 @@ const ContributionDetail = () => {
           item
           container
           justify="center"
-          xs={5}
-          sm={5}
-          md={3}
-          lg={3}
+          xs={4}
+          sm={4}
+          md={2}
+          lg={2}
           className={closeSideBar ? classes.sidebarClose : classes.sidebarOpen}
         >
           {closeSideBar ? "" : <SideBar></SideBar>}
@@ -157,20 +160,29 @@ const ContributionDetail = () => {
           className={classes.main}
         >
           <Box className={classes.title}>
-            <Typography variant="h5">{"Duy"}</Typography>
+            <Typography variant="h5">{email}</Typography>
           </Box>
-          <ThemeProvider theme={theme}>
+          {state === 0 || state === 1 ? (
             <Box width="100%" display="flex" justifyContent="flex-end">
-              <Link to={`/contribution/${idcon}/submit`}>
-                <Button variant="contained" color="secondary">
+              {role === "student" && (
+                <Button variant="contained" color="secondary" disabled>
                   Submit
                 </Button>
-              </Link>
-              <Button variant="contained" color="secondary">
-                Update
-              </Button>
+              )}
             </Box>
-          </ThemeProvider>
+          ) : (
+            <ThemeProvider theme={theme}>
+              <Box width="100%" display="flex" justifyContent="flex-end">
+                {role === "student" && (
+                  <Link to={`/upload/contribution/${idcon}/submit`}>
+                    <Button variant="contained" color="secondary">
+                      Submit
+                    </Button>
+                  </Link>
+                )}
+              </Box>
+            </ThemeProvider>
+          )}
           <Box className={classes.table}>
             <FilesTable files={files}></FilesTable>
           </Box>
