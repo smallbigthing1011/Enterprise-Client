@@ -88,6 +88,7 @@ const Login = () => {
           headers: {
             "Content-type": "application/json",
             "x-access-token": token.token,
+            "Access-Control-Allow-Origin": "*",
           },
           method: "GET",
         })
