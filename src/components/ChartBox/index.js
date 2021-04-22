@@ -77,7 +77,7 @@ const ChartBox = () => {
         labels: statistic.contributorNumber.labels,
         datasets: [
           {
-            label: "Number of contributions for each academic year",
+            label: "Number of contributors for each academic year",
             data: statistic.contributorNumber.data,
             backgroundColor: ["rgba(54, 162, 235, 0.8)"],
           },

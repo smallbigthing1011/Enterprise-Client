@@ -70,14 +70,16 @@ const Login = () => {
     const token = await (
       await fetch(`${API_ENDPOINT}/auth`, {
         headers: {
-          "Content-type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Content-type": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
           email,
           password,
         }),
+        mode: "no-cors",
+        credentials: "same-origin",
       })
     ).json();
 
@@ -89,11 +91,13 @@ const Login = () => {
       const data = await (
         await fetch(`${API_ENDPOINT}/accounts/me`, {
           headers: {
+            "Access-Control-Allow-Origin": "*",
             "Content-type": "application/json",
             "x-access-token": token.token,
-            "Access-Control-Allow-Origin": "*",
           },
           method: "GET",
+          mode: "no-cors",
+          credentials: "same-origin",
         })
       ).json();
 

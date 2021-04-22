@@ -199,7 +199,7 @@ const ContributionDetail = () => {
           lg={5}
           className={closeComment ? classes.commentClose : classes.commentOpen}
         >
-          {closeComment ? "" : <CommentBox></CommentBox>}
+          {closeComment ? "" : <CommentBox idcon={idcon}></CommentBox>}
         </Grid>
       </Grid>
       <Button

@@ -1,7 +1,7 @@
 import { Box, Button, Grid, makeStyles, TextField } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
 import { useEffect, useState } from "react";
-
+import API_ENDPOINT from "../../endpoint";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "visible",
   },
 }));
-function CommentBox() {
+function CommentBox(props) {
   const classes = useStyles();
   const [content, setContent] = useState("");
   const [commentBox, setCommentBox] = useState([]);
@@ -39,23 +39,46 @@ function CommentBox() {
     const tokenData = JSON.parse(cookieData);
     setUserId(tokenData.id);
     setName(tokenData.email);
+    console.log(props.idcon);
   }, []);
   useEffect(() => {
-    setCommentBox([
-      {
-        from: "tester1",
-        content: "ok",
-      },
-    ]);
+    const fetchData = async () => {
+      const tokenData = JSON.parse(cookieData);
+      const commentsData = await (
+        await fetch(`${API_ENDPOINT}/comments/contribution/${props.idcon}`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        })
+      ).json();
+      setCommentBox(commentsData.comments);
+    };
+
+    fetchData();
   }, []);
-  const handleChangeSubmit = (event) => {
+  const handleChangeSubmit = async (event) => {
+    const tokenData = JSON.parse(cookieData);
     if (event.key === "Enter") {
-      console.log(content);
-      const newComment = {
-        from: name,
+      const cloneComment = {
+        commenterEmail: name,
         content: content,
       };
-      setCommentBox([...commentBox, newComment]);
+      const newComment = await (
+        await fetch(`${API_ENDPOINT}/comments/`, {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "POST",
+          body: JSON.stringify({
+            contribution: props.idcon,
+            content: content,
+          }),
+        })
+      ).json();
+      setCommentBox([...commentBox, cloneComment]);
     }
   };
   const handleChangeComment = (event) => {
@@ -86,7 +109,9 @@ function CommentBox() {
                     className={classes.comment}
                   >
                     <Grid item xs={5} sm={5} md={5} lg={5}>
-                      <Box className={classes.content}>{item.from}</Box>
+                      <Box className={classes.content}>
+                        {item.commenterEmail}
+                      </Box>
                     </Grid>
                     <Grid item xs={7} sm={7} md={7} lg={7}>
                       <Box className={classes.content}>{item.content}</Box>
