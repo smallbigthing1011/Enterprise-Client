@@ -214,13 +214,15 @@ const UploadForm = () => {
           justify="center"
         >
           <Box component={Paper} className={classes.papper} padding={3}>
-            <TextField
-              label="Title"
-              name="title"
-              variant="outlined"
-              fullWidth
-              onChange={handleChange}
-            ></TextField>
+            {action === "upload" && (
+              <TextField
+                label="Title"
+                name="title"
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              ></TextField>
+            )}
             <label for="article">Choose Article</label>
             <input
               type="file"

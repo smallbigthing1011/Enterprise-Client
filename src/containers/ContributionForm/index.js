@@ -86,7 +86,9 @@ const ContributionForm = () => {
       })
     ).json();
     if (updatedContribution.exitcode === 0) {
-      history.push(`/contribution/${idcon}`);
+      const storage = window.localStorage;
+      const state = storage.getItem("state");
+      history.push(`/contribution/${idcon}/${state}`);
     }
   };
 

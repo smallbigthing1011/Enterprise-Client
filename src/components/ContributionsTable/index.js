@@ -29,58 +29,21 @@ const ContributionsTable = (props) => {
   const tokenData = JSON.parse(cookieData);
   useEffect(() => {
     const fetchData = async () => {
-      if (tokenData.role === "coordinator") {
-        const contributionsData = await (
-          await fetch(
-            `${API_ENDPOINT}/contributions/faculty/${tokenData.faculty}`,
-            {
-              headers: {
-                "Content-type": "application/json",
-                "x-access-token": tokenData.token,
-              },
-              method: "GET",
-            }
-          )
-        ).json();
-        setContributions(contributionsData.contribution);
-      } else if (tokenData.role === "student") {
-        const contributionsData = await (
-          await fetch(`${API_ENDPOINT}/contributions/account`, {
+      const contributionsData = await (
+        await fetch(
+          `${API_ENDPOINT}/contributions/magazine/${props.magazine}`,
+          {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
             },
             method: "GET",
-          })
-        ).json();
-        setContributions(contributionsData.contributions);
-      } else if (tokenData.role === "manager" || tokenData.role === "admin") {
-        const contributionsData = await (
-          await fetch(`${API_ENDPOINT}/contributions/selected`, {
-            headers: {
-              "Content-type": "application/json",
-              "x-access-token": tokenData.token,
-            },
-            method: "GET",
-          })
-        ).json();
-        setContributions(contributionsData.contributions);
-      } else if (tokenData.role === "guest") {
-        const contributionsData = await (
-          await fetch(
-            `${API_ENDPOINT}/contributions/faculty/${tokenData.faculty}/selected`,
-            {
-              headers: {
-                "Content-type": "application/json",
-                "x-access-token": tokenData.token,
-              },
-              method: "GET",
-            }
-          )
-        ).json();
-        setContributions(contributionsData.contributions);
-      }
+          }
+        )
+      ).json();
+      setContributions(contributionsData.contributions);
     };
+
     fetchData();
   }, []);
   const handleChange = async (id, event) => {

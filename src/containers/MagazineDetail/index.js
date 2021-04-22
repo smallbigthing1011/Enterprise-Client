@@ -77,6 +77,7 @@ const MagazineDetail = () => {
       const current = new Date();
       const closureDate = new Date(magazineData.magazine.closureDate);
       const finalClosureDate = new Date(magazineData.magazine.finalClosureDate);
+      const storage = window.localStorage;
       if (current < closureDate) {
         setMagazineState(0);
       } else if (current > finalClosureDate) {
@@ -84,7 +85,7 @@ const MagazineDetail = () => {
       } else {
         setMagazineState(1);
       }
-
+      storage.setItem("state", magazineState);
       setRole(tokenData.role);
     };
     fetchData();
@@ -171,6 +172,7 @@ const MagazineDetail = () => {
               <ContributionsTable
                 role={role}
                 state={magazineState}
+                magazine={idmagazine}
               ></ContributionsTable>
             </Box>
           </Box>
