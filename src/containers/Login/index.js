@@ -69,7 +69,10 @@ const Login = () => {
     console.log(API_ENDPOINT);
     const token = await (
       await fetch(`${API_ENDPOINT}/auth`, {
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
         method: "POST",
         body: JSON.stringify({
           email,
