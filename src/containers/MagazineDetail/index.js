@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { ContributionsTable, SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles({
   sidebarOpen: {
@@ -64,7 +65,7 @@ const MagazineDetail = () => {
     const fetchData = async () => {
       const tokenData = JSON.parse(cookieData);
       const magazineData = await (
-        await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
+        await fetch(`${API_ENDPOINT}/magazines/${idmagazine}`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -88,6 +89,7 @@ const MagazineDetail = () => {
     };
     fetchData();
   }, []);
+
   const handleClick = () => {
     setClose(!close);
   };
@@ -132,8 +134,20 @@ const MagazineDetail = () => {
             <Typography variant="h5" align="right">
               {magazine.published_year}
             </Typography>
-            {role === "admin" && <Button>Download all</Button>}
-            {role === "manager" && <Button>Download all</Button>}
+            {role === "admin" && (
+              <a
+                href={`${API_ENDPOINT}/magazines/${idmagazine}/download/selected`}
+              >
+                <Button>Download all</Button>
+              </a>
+            )}
+            {role === "manager" && (
+              <a
+                href={`${API_ENDPOINT}/magazines/${idmagazine}/download/selected`}
+              >
+                <Button>Download all</Button>
+              </a>
+            )}
           </Box>
           <Box className={classes.table}>
             <Box>

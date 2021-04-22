@@ -11,6 +11,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Magazine, SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const theme = createMuiTheme({
   palette: {
@@ -68,7 +69,7 @@ const Magazines = () => {
       setLoading(true);
       setRole(tokenData.role);
       const magazinesData = await (
-        await fetch("http://localhost:3001/magazines", {
+        await fetch(`${API_ENDPOINT}/magazines`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,

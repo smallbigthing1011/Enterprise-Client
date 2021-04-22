@@ -18,6 +18,7 @@ import crypto from "crypto-random-string";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles((theme) => ({
   sidebarOpen: {
@@ -101,7 +102,7 @@ const AccountForm = () => {
         const tokenData = JSON.parse(cookieData);
         setLoading(true);
         const accountData = await (
-          await fetch(`http://localhost:3001/accounts/${idaccount}`, {
+          await fetch(`${API_ENDPOINT}/accounts/${idaccount}`, {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
@@ -141,7 +142,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const newAccount = await (
-      await fetch("http://localhost:3001/accounts", {
+      await fetch(`${API_ENDPOINT}/accounts`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -157,7 +158,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const updatedAccount = await (
-      await fetch(`http://localhost:3001/accounts/${idaccount}`, {
+      await fetch(`${API_ENDPOINT}/accounts/${idaccount}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -178,7 +179,7 @@ const AccountForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const deletedAccount = await (
-      await fetch(`http://localhost:3001/accounts/${idaccount}`, {
+      await fetch(`${API_ENDPOINT}/accounts/${idaccount}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,

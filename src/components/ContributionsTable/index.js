@@ -13,6 +13,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles({
   link: {
@@ -31,7 +32,7 @@ const ContributionsTable = (props) => {
       if (tokenData.role === "coordinator") {
         const contributionsData = await (
           await fetch(
-            `http://localhost:3001/contributions/faculty/${tokenData.faculty}`,
+            `${API_ENDPOINT}/contributions/faculty/${tokenData.faculty}`,
             {
               headers: {
                 "Content-type": "application/json",
@@ -44,7 +45,7 @@ const ContributionsTable = (props) => {
         setContributions(contributionsData.contribution);
       } else if (tokenData.role === "student") {
         const contributionsData = await (
-          await fetch(`http://localhost:3001/contributions/account`, {
+          await fetch(`${API_ENDPOINT}/contributions/account`, {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
@@ -55,7 +56,7 @@ const ContributionsTable = (props) => {
         setContributions(contributionsData.contributions);
       } else if (tokenData.role === "manager" || tokenData.role === "admin") {
         const contributionsData = await (
-          await fetch("http://localhost:3001/contributions/selected", {
+          await fetch(`${API_ENDPOINT}/contributions/selected`, {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
@@ -67,7 +68,7 @@ const ContributionsTable = (props) => {
       } else if (tokenData.role === "guest") {
         const contributionsData = await (
           await fetch(
-            `http://localhost:3001/contributions/faculty/${tokenData.faculty}/selected`,
+            `${API_ENDPOINT}/contributions/faculty/${tokenData.faculty}/selected`,
             {
               headers: {
                 "Content-type": "application/json",
@@ -89,7 +90,7 @@ const ContributionsTable = (props) => {
 
     if (event.target.checked === true) {
       const contributionSelected = await (
-        await fetch(`http://localhost:3001/contributions/${id}/select`, {
+        await fetch(`${API_ENDPOINT}/contributions/${id}/select`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -104,7 +105,7 @@ const ContributionsTable = (props) => {
       ]);
     } else {
       const contributionSelected = await (
-        await fetch(`http://localhost:3001/contributions/${id}/deselect`, {
+        await fetch(`${API_ENDPOINT}/contributions/${id}/deselect`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,
@@ -164,14 +165,16 @@ const ContributionsTable = (props) => {
                             <VisibilityIcon></VisibilityIcon>
                           </Button>
                         </Link>
-                        <Link
-                          to={`/update/${item.id}`}
-                          className={classes.link}
-                        >
-                          <Button>
-                            <EditIcon></EditIcon>
-                          </Button>
-                        </Link>
+                        {props.role == "student" && (
+                          <Link
+                            to={`/update/${item.id}`}
+                            className={classes.link}
+                          >
+                            <Button>
+                              <EditIcon></EditIcon>
+                            </Button>
+                          </Link>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

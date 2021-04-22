@@ -12,6 +12,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles((theme) => ({
   sidebarOpen: {
@@ -75,7 +76,7 @@ const ContributionForm = () => {
     const cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const updatedContribution = await (
-      await fetch(`http://localhost:3001/contributions/${idcon}`, {
+      await fetch(`${API_ENDPOINT}/contributions/${idcon}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,

@@ -12,6 +12,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import API_ENDPOINT from "../../endpoint";
 const AccountsTable = () => {
   const [accounts, setAccounts] = useState([]);
 
@@ -20,7 +21,7 @@ const AccountsTable = () => {
       let cookieData = document.cookie;
       const tokenData = JSON.parse(cookieData);
       const accountsData = await (
-        await fetch("http://localhost:3001/accounts", {
+        await fetch(`${API_ENDPOINT}/accounts`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,

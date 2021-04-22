@@ -12,6 +12,7 @@ import ModeCommentIcon from "@material-ui/icons/ModeComment";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FilesTable, CommentBox, SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles({
   sidebarOpen: {
@@ -110,7 +111,7 @@ const ContributionDetail = () => {
 
     const fetchData = async () => {
       const contributionData = await (
-        await fetch(`http://localhost:3001/contributions/${idcon}`, {
+        await fetch(`${API_ENDPOINT}/contributions/${idcon}`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": tokenData.token,

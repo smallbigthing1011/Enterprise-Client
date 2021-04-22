@@ -12,9 +12,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../../images/logo-gw.jpg";
+import API_ENDPOINT from "../../endpoint";
 
 const theme = createMuiTheme({
   palette: {
@@ -65,8 +66,9 @@ const Login = () => {
   const [open, setOpen] = useState(false);
 
   const handleClick = async () => {
+    console.log(API_ENDPOINT);
     const token = await (
-      await fetch("http://localhost:3001/auth", {
+      await fetch(`${API_ENDPOINT}/auth`, {
         headers: { "Content-type": "application/json" },
         method: "POST",
         body: JSON.stringify({
@@ -82,7 +84,7 @@ const Login = () => {
       setPassword("");
     } else {
       const data = await (
-        await fetch("http://localhost:3001/accounts/me", {
+        await fetch(`${API_ENDPOINT}/accounts/me`, {
           headers: {
             "Content-type": "application/json",
             "x-access-token": token.token,

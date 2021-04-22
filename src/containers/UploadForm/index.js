@@ -19,6 +19,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles((theme) => ({
   sidebarOpen: {
@@ -117,7 +118,7 @@ const UploadForm = () => {
         pictures.forEach((picture) => data.append("pictures", picture));
         data.append("agreement", agree);
         axios
-          .post("http://localhost:3001/contributions", data, {
+          .post(`${API_ENDPOINT}/contributions`, data, {
             headers: {
               "x-access-token": tokenData.token,
             },
@@ -140,7 +141,7 @@ const UploadForm = () => {
         pictures.forEach((picture) => data.append("pictures", picture));
         data.append("agreement", agree);
         axios
-          .post(`http://localhost:3001/files/contribution/${idcon}`, data, {
+          .post(`${API_ENDPOINT}/files/contribution/${idcon}`, data, {
             headers: {
               "x-access-token": tokenData.token,
             },

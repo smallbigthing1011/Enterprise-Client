@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles({
   root: {
@@ -33,7 +34,7 @@ const FilesTable = (props) => {
                 <TableRow key={file.id}>
                   <TableCell>{file.createdAt}</TableCell>
                   <TableCell>
-                    <a href={`http://localhost:3001/files/${file.id}`}>
+                    <a href={`${API_ENDPOINT}/files/${file.id}`}>
                       {file.filename}
                     </a>
                   </TableCell>

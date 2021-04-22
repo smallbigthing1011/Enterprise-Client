@@ -13,6 +13,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { SideBar } from "../../components";
+import API_ENDPOINT from "../../endpoint";
 
 const useStyles = makeStyles((theme) => ({
   sidebarOpen: {
@@ -84,6 +85,7 @@ const MagazineForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     let newMagazineInfo = { ...magazineInfo };
+    console.log("ok");
     newMagazineInfo.manager_id = tokenData.id;
     setMagazineInfo(newMagazineInfo);
   }, []);
@@ -94,7 +96,7 @@ const MagazineForm = () => {
         const tokenData = JSON.parse(cookieData);
         setLoading(true);
         const magazineData = await (
-          await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
+          await fetch(`${API_ENDPOINT}/magazines/${idmagazine}`, {
             headers: {
               "Content-type": "application/json",
               "x-access-token": tokenData.token,
@@ -139,7 +141,7 @@ const MagazineForm = () => {
     let cookieData = document.cookie;
     const tokenData = JSON.parse(cookieData);
     const newMagazine = await (
-      await fetch("http://localhost:3001/magazines", {
+      await fetch(`${API_ENDPOINT}/magazines`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -158,7 +160,7 @@ const MagazineForm = () => {
     const tokenData = JSON.parse(cookieData);
 
     const updatedMagazine = await (
-      await fetch(`http://localhost:3001/magazines/${idmagazine}`, {
+      await fetch(`${API_ENDPOINT}/magazines/${idmagazine}`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,

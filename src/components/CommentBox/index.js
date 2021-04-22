@@ -46,22 +46,6 @@ function CommentBox() {
         from: "tester1",
         content: "ok",
       },
-      {
-        from: "tester1",
-        content: "ok",
-      },
-      {
-        from: "tester1",
-        content: "ok",
-      },
-      {
-        from: "tester1",
-        content: "ok",
-      },
-      {
-        from: "tester1",
-        content: "ok",
-      },
     ]);
   }, []);
   const handleChangeSubmit = (event) => {

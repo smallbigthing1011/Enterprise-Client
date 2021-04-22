@@ -45,15 +45,16 @@ function App() {
         <Route exact path="/dashboard">
           <Dashboard></Dashboard>
         </Route>
+        <Route exact path="/account/:action">
+          <AccountForm></AccountForm>
+        </Route>
         <Route exact path="/magazines">
           <Magazines></Magazines>
         </Route>
         <Route exact path="/magazine/:action">
           <MagazineForm></MagazineForm>
         </Route>
-        <Route exact path="/account/:action">
-          <AccountForm></AccountForm>
-        </Route>
+
         <Route exact path="/account/:action/:idaccount">
           <AccountForm></AccountForm>
         </Route>
