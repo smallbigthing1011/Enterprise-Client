@@ -70,7 +70,6 @@ const Login = () => {
     const token = await (
       await fetch(`${API_ENDPOINT}/auth`, {
         headers: {
-          "Access-Control-Allow-Origin": "*",
           "Content-type": "application/json",
         },
         method: "POST",
@@ -78,8 +77,6 @@ const Login = () => {
           email,
           password,
         }),
-        mode: "no-cors",
-        credentials: "same-origin",
       })
     ).json();
 
@@ -96,8 +93,6 @@ const Login = () => {
             "x-access-token": token.token,
           },
           method: "GET",
-          mode: "no-cors",
-          credentials: "same-origin",
         })
       ).json();
 
