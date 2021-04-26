@@ -142,7 +142,7 @@ const Magazines = () => {
           >
             {loading ? (
               <CircularProgress></CircularProgress>
-            ) : (
+            ) : magazines.length > 0 ? (
               magazines.map((item) => {
                 return (
                   <Link to={`/magazine/${item.id}/detail/contributions`}>
@@ -159,6 +159,8 @@ const Magazines = () => {
                   </Link>
                 );
               })
+            ) : (
+              "No Magazines"
             )}
           </Box>
         </Grid>

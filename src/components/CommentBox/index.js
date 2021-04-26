@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "30px",
     overflow: "visible",
   },
+  name: {
+    fontSize: "10px",
+  },
 }));
 function CommentBox(props) {
   const classes = useStyles();
@@ -108,18 +111,12 @@ function CommentBox(props) {
                     lg={12}
                     className={classes.comment}
                   >
-                    <Grid item xs={5} sm={5} md={5} lg={5}>
-                      <Box className={classes.content}>
-                        {item.commenterEmail}
-                      </Box>
-                    </Grid>
-                    <Grid item xs={7} sm={7} md={7} lg={7}>
-                      <Box className={classes.content}>{item.content}</Box>
-                    </Grid>
+                    <Box className={classes.name}>{item.commenterEmail}</Box>
+                    <Box className={classes.content}>{item.content}</Box>
                   </Grid>
                 );
               })
-            : "no"}
+            : ""}
         </Grid>
         <Grid item container xs={12} sm={12} md={12} lg={12}>
           <form onKeyDown={handleChangeSubmit} className={classes.form}>

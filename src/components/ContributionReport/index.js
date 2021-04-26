@@ -45,7 +45,7 @@ const ContributionReport = (props) => {
       ).json();
       const contributionso14Data = await (
         await fetch(
-          `${API_ENDPOINT}/report/exception/contributionWithoutComment/over14/${props.year}`,
+          `${API_ENDPOINT}/report/exception/contributionWithoutComment/over14/true`,
           {
             headers: {
               "Content-type": "application/json",

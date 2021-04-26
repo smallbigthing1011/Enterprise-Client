@@ -41,7 +41,7 @@ const ChartBox = () => {
 
     setYearArray(chartData.labels);
     const chartData2 = await (
-      await fetch(`${API_ENDPOINT}/report/statictics/contributors`, {
+      await fetch(`${API_ENDPOINT}/report/statistics/contributors`, {
         headers: {
           "Content-type": "application/json",
           "x-access-token": tokenData.token,
@@ -50,13 +50,16 @@ const ChartBox = () => {
       })
     ).json();
     const chartData3 = await (
-      await fetch(`${API_ENDPOINT}/report/statictics/year/${currentYear}`, {
-        headers: {
-          "Content-type": "application/json",
-          "x-access-token": tokenData.token,
-        },
-        method: "GET",
-      })
+      await fetch(
+        `${API_ENDPOINT}/report/statistics/contributions/year/${currentYear}`,
+        {
+          headers: {
+            "Content-type": "application/json",
+            "x-access-token": tokenData.token,
+          },
+          method: "GET",
+        }
+      )
     ).json();
     const newChartData = { ...chartData };
     newChartData.datasets.forEach(
@@ -66,12 +69,29 @@ const ChartBox = () => {
     newChartData2.datasets.forEach(
       (item) => (item.backgroundColor = getRandomColor())
     );
-    const newChartData3 = { ...chartData3 };
+    var newChartData3;
+    const newDatasets = [];
+    const newLabels = [];
+    console.log(chartData3);
+
     let arrayColor = [];
-    for (let i = 0; i < newChartData3.labels.length; i++) {
+    for (let i = 0; i < chartData3.datasets.length; i++) {
+      newLabels.push(chartData3.datasets[i].label);
+      newDatasets.push(chartData3.datasets[i].data[0]);
       arrayColor.push(getRandomColor());
     }
-    chartData3.datasets[0].backgroundColor = arrayColor;
+    newChartData3 = {
+      labels: newLabels,
+      datasets: [
+        {
+          data: newDatasets,
+          backgroundColor: arrayColor,
+          hoverOffset: 4,
+        },
+      ],
+    };
+    console.log(newChartData3);
+
     Chart.register(...registerables);
 
     var ctx = document.getElementById("contributionNumber").getContext("2d");
@@ -86,10 +106,7 @@ const ChartBox = () => {
         legend: {
           position: "top",
         },
-        title: {
-          display: true,
-          text: "Chart.js Bar Chart",
-        },
+
         scales: {
           yAxes: [
             {
@@ -109,10 +126,7 @@ const ChartBox = () => {
         legend: {
           position: "top",
         },
-        title: {
-          display: true,
-          text: "Chart.js Bar Chart",
-        },
+
         scales: {
           yAxes: [
             {
@@ -126,7 +140,7 @@ const ChartBox = () => {
     });
     let percentageChart = new Chart(ctx3, {
       type: "pie",
-      data: chartData3,
+      data: newChartData3,
     });
 
     return function cleanup() {
@@ -150,6 +164,7 @@ const ChartBox = () => {
       <Typography align="center" variant="h6">
         Percentage of each faculty in year {year}
       </Typography>
+
       <canvas id="percentage" className={classes.chart}></canvas>
       <Box>
         <ContributionReport></ContributionReport>
